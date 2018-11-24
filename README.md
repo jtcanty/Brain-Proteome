@@ -1,4 +1,4 @@
-## Linear modelling and and network analysis of the Human Brain Proteome
+## Linear modelling and and network analysis of the human brain proteome
 Authors: Annan Deng, Ramasubramanian Balasubramanian, John Canty, William Krinsman
 
 ### Data Structures
