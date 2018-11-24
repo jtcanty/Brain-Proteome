@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1543034691883.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2536716488",
+    "id" : "A263772",
+    "lastKnownWriteTime" : 1543034749,
+    "last_content_update" : 1543034749406,
+    "path" : "~/Documents/Coding/Linear Modelling and Network Analysis of Human Brain Proteome /EDA_analysis.Rmd",
+    "project_path" : "EDA_analysis.Rmd",
+    "properties" : {
+        "cursorPosition" : "4,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
