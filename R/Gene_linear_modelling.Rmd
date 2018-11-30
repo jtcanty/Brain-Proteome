@@ -2,3 +2,55 @@
 title: "Gene_linear_modelling"
 output: odf_document
 ---
+
+```{r Import Libraries, include=FALSE}
+library(limma)
+
+```
+
+```{r Load Data, include=TRUE}
+load("~/Documents/Coding/Brain-Proteome/R/filtered_TMT_Summary_Data.RData")
+
+```
+
+```{r Additive Linear Model, include=TRUE}
+nCols <- ncol(filtered_TMT_Summary_Data)
+nGenes <- nrow(filtered_TMT_Summary_Data)
+
+# additive linear model
+addBatchFactor <- c(2,2,1,1,3,3,4,4)
+addDiseaseGroup <- factor(rep(addBatchFactor,5))
+addDesign <- model.matrix(~addDiseaseGroup + 0)
+colnames(addDesign) <- c("Ctl", "AD", "PD","ADPD")
+
+addFit <- lmFit(filtered_TMT_Summary_Data[,7:nCols], addDesign)
+
+contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=addDesign)
+addFit2 <- contrasts.fit(addFit, contrast.matrix)
+addFit2 <- eBayes(addFit2)
+topGenesAdd <- topTable(addFit2, coef=1, adjust="BH")
+
+# interaction linear model
+AD <- factor(rep(c(1,1,0,0,0,0,1,1),5))
+PD <- factor(rep(c(0,0,0,0,1,1,1,1),5))
+intDesign <- model.matrix(~AD + PD + AD*PD + 0)
+colnames(intDesign) <- c("Ctl", "AD", "PD","ADPD")
+
+intFit <- lmFit(filtered_TMT_Summary_Data[,7:nCols], intDesign)
+
+contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=intDesign)
+intFit2 <- contrasts.fit(intFit, contrast.matrix)
+intFit2 <- eBayes(intFit2)
+topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
+
+```
+
+
+```{r Mixed Linear Model, include=TRUE}
+
+```
+
+
+```{r Volcano plot, include=TRUE}
+
+```
