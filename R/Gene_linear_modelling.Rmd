@@ -5,12 +5,10 @@ output: odf_document
 
 ```{r Import Libraries, include=FALSE}
 library(limma)
-
 ```
 
 ```{r Load Data, include=TRUE}
 load("~/Documents/Coding/Brain-Proteome/R/filtered_TMT_Summary_Data.RData")
-
 ```
 
 ```{r Additive Linear Model, include=TRUE}
@@ -42,13 +40,8 @@ contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=intDesign)
 intFit2 <- contrasts.fit(intFit, contrast.matrix)
 intFit2 <- eBayes(intFit2)
 topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
-
 ```
 
-
-```{r Mixed Linear Model, include=TRUE}
-
-```
 
 
 ```{r Volcano plot, include=TRUE}

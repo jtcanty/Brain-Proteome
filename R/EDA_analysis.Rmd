@@ -4,25 +4,20 @@ output: pdf_document
 ---
 
 ```{r Import libaries, echo=FALSE, include=FALSE}
-
 library(readxl)
 library(ggplot2)
 library(SummarizedExperiment)
 library(dplyr)
 library(rafalib)
 library(limma)
-
 ```
 
 ```{r Open TMT Data Summary, include=TRUE}
-
 TMT_Summary_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summary_Data.xlsx")
 View(TMT_Summary_Data)
-
 ```
 
 ```{r Preprocess dataset, include=TRUE}
-
 nGenes <- nrow(TMT_Summary_Data)
 nCols <- ncol(TMT_Summary_Data)
 
@@ -36,11 +31,9 @@ filtered_TMT_Summary_Data <- TMT_Summary_Data[numNans < 1,]
 
 # Save the data
 save(filtered_TMT_Summary_Data, file='filtered_TMT_Summary_Data.RData')
-
 ```
 
 ```{r Create Summarized Experiment, include=TRUE}
-
 # Import TMT data into a Summarized Experiment
 filtered_TMT_Summary_Data_SE <- filtered_TMT_Summary_Data
 
@@ -57,11 +50,9 @@ exp <- SummarizedExperiment(assays=list(batch1=(filtered_TMT_Summary_Data_SE[,7:
                                         batch4=(filtered_TMT_Summary_Data_SE[,31:38]),
                                         batch5=(filtered_TMT_Summary_Data_SE[,39:46])),
                                         rowData=rowData, colData=colData)
-
 ```
 
 ```{r Create boxplot of batches}
-
 # Display samples in box-plots. Color by attribute and color by batch number.
 Raw_TMT_Summary_Data <- filtered_TMT_Summary_Data[,7:nCols]
 
@@ -82,11 +73,9 @@ p2 + scale_color_manual(values= batchColors) +
 
 # Plot summary of statistics
 summary(Quantile_TMT_Summary_Data)
-
 ```
 
 ```{r PCA analysis, include=TRUE}
-
 qData <- Quantile_TMT_Summary_Data
 
 # Extract samples for each disease-state
@@ -121,7 +110,6 @@ legend('bottomright',fill=c('black','red'), legend = c('Ctl','AD'))
 
 pairs(PCA_CtlvsADPD$x[,1:3], col=CtlvsPDAD_Colors, pch=16)
 legend('bottomright',fill=c('black','green'), legend = c('Ctl','PD_AD'))
-
 ```
 
 ```{r Clustering using K-means and PAM}
