@@ -1,0 +1,38 @@
+% The following macro is used to generate a general header
+
+% \frontbox{ Class/Course }{ type of document }{ number of document type }{ date }[your name][Thing to add before date]
+\newcommandx{\frontbox}[6][ 5={William Krinsman}, 6={} ]{
+	%----------------- Note how we have to use \newcommandx  (emphasis on the X) instead of \newcommand in order to access the functionality of the xargs package
+   \thispagestyle{plain}
+   \newpage
+   \noindent
+%---these three lines I added so that the bottom of the front page matches the bottoms of the other pages 
+%  \lfoot{#5}
+%   \cfoot{#1}
+%  \rfoot{Page \thepage}
+%---hopefully makes things look somewhat less ugly
+% EDIT: nope, that solution doesn't work -- probably because those commands don't work with pagestyle{plain}, probably only with pagestyle{fancy}
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {  #1
+                        \hfill Fall 2018} }
+       \vspace{4mm}
+       % Add in the specific number of the problem set
+       %----------Assignment? Homework? Problem Set?-----------
+       \hbox to 6.28in { {\Large \hfill #2 #3  \hfill} }
+       \vspace{2mm}
+       % Add in the specific due date of the problem set as well as your name
+       \hbox to 6.28in { { #5 \hfill #6 #4} }
+       % NOTE: changed the above from Due: #4 \hfill #5 because I prefer my name on the left hand side
+       % Also got rid of the preceding \it because I thought the italic text was ugly
+      \vspace{2mm}}
+   }
+   \end{center}
+
+}
+
+% The following macro is used to generate headers for the homework and is a specific version of the general header
+
+% \HW{ Class/Course }[optional: problem set, assignment, homework]{ number of problem set }{ due date }[your name]
+\newcommandx{\HW}[5][2={Problem Set}, 5={William Krinsman}]{ \frontbox{#1}{#2}{#3}{#4}[#5][Due:] }

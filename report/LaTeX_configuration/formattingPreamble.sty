@@ -1,0 +1,34 @@
+%---uses geometry package to set margins and some such
+\usepackage[lmargin = 1in, textwidth = 6.5 in, textheight = 8.5 in]{geometry}
+% got rid of his setting the top margin to .6in because I think it made the later pages with the fancy headers look ugly
+
+%---in order to get subsections labeled with (a) (b) (c) by default
+\renewcommand{\thesubsection}{ (\alph{subsection})}
+
+%---says not to indent paragraphs
+\setlength{\parindent}{0 in}
+
+%---set up headers and footers for pages further into the document:
+
+% \headerfooter{ Class/Course }[optional: problem set, assignment, homework]{ number of problem set }{ due date }[your name]
+\newcommandx{\headerfooter}[5][2={Problem Set }, 5={William Krinsman} ]{
+\pagestyle{fancy}
+\lhead{#2 #3}
+\rhead{#4}
+\chead{}
+\lfoot{#5}
+\cfoot{#1}
+\rfoot{Page \thepage}
+
+}
+%---uses the package fancyhdr
+%---also uses package xargs for the newcommandx with the optional parameters
+%---same command structure as the \HW command
+
+
+%---uses the package tcolorbox
+%---follows exactly answers here: https://tex.stackexchange.com/a/265804/103825 and here: https://tex.stackexchange.com/a/238296/103825 except that environment name is different
+\definecolor{block-gray}{gray}{0.85}
+\newtcolorbox{blockquote}{colback=block-gray,grow to right by=-10mm,grow to left by=-10mm,
+boxrule=0pt,boxsep=0pt,breakable}
+%--- see the documentation for explanation of all of the parameter values: https://mirror.hmc.edu/ctan/macros/latex/contrib/tcolorbox/tcolorbox.pdf
