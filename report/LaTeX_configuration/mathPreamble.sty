@@ -1,0 +1,135 @@
+%			New math operators
+
+%new, specialized math commands:
+%----argmin
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+%----argmax
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+%----partial derivatives
+\newcommand{\partialderivative}[2][]{\frac{ \partial #1   }{ \partial #2  } }
+
+%----note 1: the following commands require mathtools package
+%----note: the DeclarePairedDelimiter and thus the mathtools package are helpful because of this: https://tex.stackexchange.com/questions/2607/spacing-around-left-and-right
+
+%----absolute value
+\DeclarePairedDelimiter\absolutevalue{\lvert}{\rvert}
+%----norm
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+%----floor
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+%			Commonly used symbols
+
+%	real numbers
+\newcommand{\reals}{\mathbb{R}}
+%	natural numbers
+\newcommand{\naturals}{\mathbb{N}}
+%	integers
+\newcommand{\integers}{\mathbb{Z}}
+% 	switches the default epsilon to be the good epsilon and the backup epsilon to be the bad epsilon
+\let\otherepsilon\epsilon
+\let\realepsilon\varepsilon
+\let\varepsilon\otherepsilon
+\let\epsilon\realepsilon
+% independence sign -- don't quite understand how works, but see here: https://tex.stackexchange.com/questions/79434/double-perpendicular-symbol-for-independence
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern6mu{#1#2}}}
+
+% Matrix algebra
+
+% denote rows of a matrix
+\newcommand{\row}[1]{(\!\overset{\ \Rightarrow}{#1} \!)}
+% denote columns of a matrix
+\newcommand{\column}[1]{(\! #1 ^{\Downarrow})}  
+
+
+% 			Probability Theory
+
+%	expectation operator
+\newcommand{\expectation}{\mathbb{E}}
+%	probability measure
+\newcommand{\probability}{\mathbb{P}}
+% indicator functions.  NOTE: this requires package bbold for \mathbb{1} to work
+\newcommand{\indicator}[1]{\mathbb{1}_{#1}}
+% Variance
+\newcommand{\variance}{\operatorname{Var}}
+% Covariance
+\newcommand{\covariance}{\operatorname{Cov}}
+% independent and identically distributed
+\newcommand{\iid}{\overset{i.i.d.}{\sim}}
+% normal distribution
+\newcommand{\gaussian}[2]{\mathscr{N}\left(  #1, #2  \right)}
+
+%			Equation formatting
+
+%	simplified procedure for creating (square bracket shaped) matrices
+\newcommand{\Matrix}[1]{  \begin{bmatrix}  #1  \end{bmatrix}  }
+
+%	simplified procedure for putting expressions into parentheses
+\newcommand{\parentheses}[1]{  \left(   #1  \right)   }
+%	simplified procedure for putting expressions into square brackets
+\newcommand{\brackets}[1]{  \left[   #1  \right]   }
+
+% 	load the array package, required for solution given below for equation formatting, see here: https://tex.stackexchange.com/questions/44407/make-every-element-of-an-array-displaystyle
+\usepackage{array}
+%    also  loading the longtable package for allowing page breaks, see here: https://tex.stackexchange.com/questions/317121/automatically-adding-page-breaks-into-long-array-environments
+% did not actually work, it just messed everything up, because interpreter doesn't think longtable is math mode or whatever
+% apparently longtable is not designed to be math mode? https://tex.stackexchange.com/questions/155298/math-mode-in-longtabu
+% so if I want to use longtable instead of array here, it would require more than just replacing ``array'' with  ``longtable''.
+
+
+%	waste less time setting up the formatting for equations
+\newenvironment{formulae} [1] [3] {
+	
+	% See array package documentation: http://mirrors.rit.edu/CTAN/macros/latex/required/tools/array.pdf
+	% creates three new column types, which are just the regular column types, but with displaystyle inserted automatically before each entry
+	\newcolumntype{C}{>{\displaystyle}c}
+	\newcolumntype{L}{>{\displaystyle}l}
+	\newcolumntype{R}{>{\displaystyle}r}
+
+        % See answer here: https://tex.stackexchange.com/a/267485
+       \begingroup\abovedisplayskip=-6pt \abovedisplayshortskip=-6pt \belowdisplayshortskip=-3pt \belowdisplayskip=-3pt
+       % https://tex.stackexchange.com/questions/51682/is-it-possible-to-pagebreak-aligned-equations
+       %\allowdisplaybreaks
+       % above (allowdisplaybreaks) doesn't work though because supposedly only works for the environments from amsmath package unfortunately
+
+	\[  \begin{array}{R*{\numexpr #1 -2}CL<{\smallskip \smallskip}} 
+ }{	
+ 
+ % according to here, the size of smallskip (\smallskipamount) is 3.0 pt each, https://tex.stackexchange.com/questions/114569/space-between-paragraphs-local
+ % so to delete two unnecessary smallskips after the end of one of these environments arrays, all we have to do is delete 6pt so that is what is now done before ending the array
+\\[-6pt]
+
+
+	\end{array} \]	
+
+\endgroup
+ }
+
+% copy-pasted from here: https://tex.stackexchange.com/questions/280819/vertical-space-command-which-is-between-intertext-and-shortintertext
+\MHInternalSyntaxOn
+\newcommandx{\adjintertext} [3] [1={-15pt}, 2={3pt}]% #1=above skip, #2=below skip, #3=text
+{\ifvmode\else\\\@empty\fi
+  \noalign{%
+    %\penalty\postdisplaypenalty\vskip\belowdisplayskip
+    \vskip-\lineskiplimit      % CCS
+    \vskip\normallineskiplimit % CCS
+    \vskip#1
+     \vbox{\normalbaselines
+       \ifdim
+         \ifdim\@totalleftmargin=\z@
+           \linewidth
+         \else
+           -\maxdimen
+         \fi
+       =\columnwidth
+      \else \parshape\@ne \@totalleftmargin \linewidth
+      \fi
+      \noindent#3\par}%
+    %\penalty\predisplaypenalty\vskip\abovedisplayskip%
+    \vskip-\lineskiplimit      % CCS
+    \vskip\normallineskiplimit % CCS
+    \vskip#2
+ }}%
+\MHInternalSyntaxOff
