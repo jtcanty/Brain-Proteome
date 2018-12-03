@@ -13,7 +13,14 @@ library(limma)
 ```
 
 ```{r Open TMT Data Summary, include=TRUE}
-TMT_Summary_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summary_Data.xlsx")
+# FC - Frontal Cortex
+# ACG = Anterior Cingulate Gyrus
+FC_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summary_Data.xlsx", sheet=1, skip=2)
+ACG_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summary_Data.xlsx", sheet=2, skip=2)
+
+# READ:    Comment out depending on data-set of interest
+#TMT_Summary_Data <- ACG_Data
+TMT_Summary_Data <- FC_Data
 View(TMT_Summary_Data)
 ```
 
@@ -102,21 +109,20 @@ CtlvsPD_Colors <- c(rep('black',10), rep('blue', 10))
 CtlvsAD_Colors <- c(rep('black',10), rep('red', 10))
 CtlvsPDAD_Colors <- c(rep('black',10), rep('green', 10))
 
-pairs(PCA_CtlvsPD$x[,1:3], col=CtlvsPD_Colors, pch=16)
+pairs(PCA_CtlvsPD$x[,1:3], col=CtlvsPD_Colors, pch=16, oma=c(3,3,3,15))
+par(xpd = TRUE)
 legend('bottomright',fill=c('black','blue'), legend = c('Ctl','PD'))
 
-pairs(PCA_CtlvsAD$x[,1:3], col=CtlvsAD_Colors, pch=16)
+pairs(PCA_CtlvsAD$x[,1:3], col=CtlvsAD_Colors, pch=16, oma=c(3,3,3,15))
+par(xpd = TRUE)
 legend('bottomright',fill=c('black','red'), legend = c('Ctl','AD'))
 
-pairs(PCA_CtlvsADPD$x[,1:3], col=CtlvsPDAD_Colors, pch=16)
+pairs(PCA_CtlvsADPD$x[,1:3], col=CtlvsPDAD_Colors, pch=16, oma=c(3,3,3,15))
+par(xpd = TRUE)
 legend('bottomright',fill=c('black','green'), legend = c('Ctl','PD_AD'))
 ```
 
-```{r Clustering using K-means and PAM}
 
-
-
-```
 
 
 
