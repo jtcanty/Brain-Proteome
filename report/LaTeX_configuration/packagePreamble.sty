@@ -1,0 +1,46 @@
+
+\documentclass[twoside]{article} %---original command 
+
+% the preamble which specifies packages and parameters for the document
+\usepackage{graphics}
+\usepackage[pdftex]{color,graphicx}
+\usepackage{amsthm}
+\usepackage{relsize}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{framed}
+
+% for inserting URL's into a page
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue]{hyperref}
+
+% for numbering lists with (a) (b) (c) and other such nice things
+\usepackage[inline]{enumitem}
+% optional [inline] option is to get the enumerate* environment (or *enumerate; something like that)
+
+% for blackboard 1's to use with indicator functions
+\usepackage{bbold}
+
+%	adds script font, useful e.g. for defining normal RV's or sigma-algebras, \mathscr
+\usepackage{mathrsfs}
+
+%----we require the package mathtools in order for the following
+%DeclaredPairedDelimiter thing to work, e.g. absolute value and norm
+\usepackage{mathtools}
+% We also require mathtools for \shortintertext to work
+
+%---required for the commands in the formatting preamble:
+\usepackage{fancyhdr}
+
+%-------------Discussion of reasons for using this pacakge can be found here: https://tex.stackexchange.com/questions/29973/more-than-one-optional-argument-for-newcommand or here: https://tex.stackexchange.com/questions/145175/optional-arguments-xparse-vs-xargs  ----------
+\usepackage{xargs}
+%---------------------Long term, using xparse might be a better implementation
+%---use it for the headers and footers commands
+
+%---needed for the custom block quote things. the most argument is as recommended in the answers here:
+%--- https://tex.stackexchange.com/a/238296/103825   and  here:  https://tex.stackexchange.com/a/265804/103825
+\usepackage[most]{tcolorbox}
+
+
+% https://tex.stackexchange.com/questions/3238/bm-package-versus-boldsymbol
+% This answer says this has to be loaded after all font packages to work correctly: https://tex.stackexchange.com/a/179337
+\usepackage{bm}
