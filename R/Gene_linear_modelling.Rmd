@@ -5,6 +5,7 @@ output: odf_document
 
 ```{r Import Libraries, include=FALSE}
 library(limma)
+library(ggplot2)
 ```
 
 ```{r Load Data, include=TRUE}
@@ -29,9 +30,11 @@ addFit2 <- eBayes(addFit2)
 topGenesAdd <- topTable(addFit2, coef=1, adjust="BH")
 
 # interaction linear model
+Ctl <-factor(rep(c(0,0,1,1,0,0,0,0),5))
 AD <- factor(rep(c(1,1,0,0,0,0,1,1),5))
 PD <- factor(rep(c(0,0,0,0,1,1,1,1),5))
-intDesign <- model.matrix(~AD + PD + AD:PD + 0)
+intDesign <- model.matrix(~Ctl + AD + PD + AD:PD + 0)
+intDesign <- intDesign[,2:5]
 colnames(intDesign) <- c("Ctl", "AD", "PD","ADPD")
 
 intFit <- lmFit(filtered_TMT_Summary_Data[,7:nCols], intDesign)
@@ -45,23 +48,65 @@ topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
 
 
 ```{r Volcano plot, include=TRUE}
-# Generate a volcano plot using the additive model.
-adAddVolcano <- volcanoplot(addFit2, coef = 1, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
-title('Additive model: Ctrl vs. AD')
+# Generate Log-fold changes
+adAddGenes <- topTable(addFit2, coef=1, number=1000000, sort.by="logFC")
+pdAddGenes <- topTable(addFit2, coef=2, number=1000000, sort.by="logFC")
+adpdAddGenes <- topTable(addFit2, coef=3, number=1000000, sort.by="logFC")
 
-pdAddVolcano <- volcanoplot(addFit2, coef = 2, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
-title('Additive model: Ctrl vs. PD')
+adIntGenes <- topTable(intFit2, coef=1, number=1000000, sort.by="logFC")
+pdIntGenes <- topTable(intFit2, coef=2, number=1000000, sort.by="logFC")
+adpdIntGenes <- topTable(intFit2, coef=3, number=1000000, sort.by="logFC")
 
-adpdAddVolcano <- volcanoplot(addFit2, coef = 3, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
-title('Additive model: Ctrl vs. ADPD')
+# Add compute expressed genes threshold (TRUE is differentially expressed)
+adAddGenes$threshold = as.factor(abs(adAddGenes$logFC) > 0.25 & adAddGenes$P.Value < 0.05/nGenes)
+pdAddGenes$threshold = as.factor(abs(pdAddGenes$logFC) > 0.25 & pdAddGenes$P.Value < 0.05/nGenes)
+adpdAddGenes$threshold = as.factor(abs(adpdAddGenes$logFC) > 0.25 & adpdAddGenes$P.Value < 0.05/nGenes)
 
-# Generate a volcano plot using the interaction model.
-adIntVolcano <- volcanoplot(intFit2, coef = 1, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
-title('Interaction model: Ctrl vs. AD')
+adIntGenes$threshold = as.factor(abs(adIntGenes$logFC) > 0.25 & adIntGenes$P.Value < 0.05/nGenes)
+pdIntGenes$threshold = as.factor(abs(pdIntGenes$logFC) > 0.25 & pdIntGenes$P.Value < 0.05/nGenes)
+adpdIntGenes$threshold = as.factor(abs(adpdIntGenes$logFC) > 0.25 & adpdIntGenes$P.Value < 0.05/nGenes)
 
-pdIntVolcano <- volcanoplot(intFit2, coef = 2, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
-title('Interaction model: Ctrl vs. PD')
+# Generate volcano plots using the additive model.
+g1 = ggplot(data=adAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. AD')
+g1
 
-adpdIntVolcano <- volcanoplot(intFit2, coef = 3, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
-title('Interaction model: Ctrl vs. ADPD')
+g2 = ggplot(data=pdAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. PD')
+g2
+
+g3 = ggplot(data=adpdAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. ADPD')
+g3
+
+# Generate volcano plots using the interaction model.
+g4 = ggplot(data=adIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. PD')
+g4
+
+g5 = ggplot(data=pdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. PD')
+g5
+
+g6 = ggplot(data=adpdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. PD')
+g6
 ```
