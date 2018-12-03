@@ -31,7 +31,7 @@ topGenesAdd <- topTable(addFit2, coef=1, adjust="BH")
 # interaction linear model
 AD <- factor(rep(c(1,1,0,0,0,0,1,1),5))
 PD <- factor(rep(c(0,0,0,0,1,1,1,1),5))
-intDesign <- model.matrix(~AD + PD + AD*PD + 0)
+intDesign <- model.matrix(~AD + PD + AD:PD + 0)
 colnames(intDesign) <- c("Ctl", "AD", "PD","ADPD")
 
 intFit <- lmFit(filtered_TMT_Summary_Data[,7:nCols], intDesign)
@@ -45,5 +45,23 @@ topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
 
 
 ```{r Volcano plot, include=TRUE}
+# Generate a volcano plot using the additive model.
+adAddVolcano <- volcanoplot(addFit2, coef = 1, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
+title('Additive model: Ctrl vs. AD')
 
+pdAddVolcano <- volcanoplot(addFit2, coef = 2, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
+title('Additive model: Ctrl vs. PD')
+
+adpdAddVolcano <- volcanoplot(addFit2, coef = 3, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
+title('Additive model: Ctrl vs. ADPD')
+
+# Generate a volcano plot using the interaction model.
+adIntVolcano <- volcanoplot(intFit2, coef = 1, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
+title('Interaction model: Ctrl vs. AD')
+
+pdIntVolcano <- volcanoplot(intFit2, coef = 2, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
+title('Interaction model: Ctrl vs. PD')
+
+adpdIntVolcano <- volcanoplot(intFit2, coef = 3, style = "p-value", highlight = 0, hl.col="blue", xlab = "Log2 Fold Change", ylab = NULL, pch=16, cex=0.35)
+title('Interaction model: Ctrl vs. ADPD')
 ```
