@@ -110,12 +110,16 @@ CtlvsAD_Colors <- c(rep('black',10), rep('red', 10))
 CtlvsPDAD_Colors <- c(rep('black',10), rep('green', 10))
 
 pairs(PCA_CtlvsPD$x[,1:3], col=CtlvsPD_Colors, pch=16, oma=c(3,3,3,15))
+opar <- par(no.readonly=TRUE)
 par(xpd = TRUE)
 legend('bottomright',fill=c('black','blue'), legend = c('Ctl','PD'))
+par(opar)
 
 pairs(PCA_CtlvsAD$x[,1:3], col=CtlvsAD_Colors, pch=16, oma=c(3,3,3,15))
+opar <- par(no.readonly=TRUE)
 par(xpd = TRUE)
 legend('bottomright',fill=c('black','red'), legend = c('Ctl','AD'))
+par(opar)
 
 pairs(PCA_CtlvsADPD$x[,1:3], col=CtlvsPDAD_Colors, pch=16, oma=c(3,3,3,15))
 par(xpd = TRUE)
