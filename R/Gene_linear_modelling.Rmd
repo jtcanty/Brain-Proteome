@@ -93,7 +93,7 @@ g4 = ggplot(data=adIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) 
   geom_point(alpha=0.4, size=1.75) +
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
-  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. PD')
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. AD')
 g4
 
 g5 = ggplot(data=pdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
@@ -107,6 +107,6 @@ g6 = ggplot(data=adpdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)
   geom_point(alpha=0.4, size=1.75) +
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
-  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. PD')
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. ADPD')
 g6
 ```
