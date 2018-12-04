@@ -201,7 +201,7 @@ table(true=CAP[, "y"], pred=predict(svmfit, newdata=CAP[,]))
 
 ```{r tree, include=TRUE}
 library(tree)
-# train the tree
+# train the tree using PCA
 dat=data.frame(x=PCA$x, y=as.factor(category))
 out.tre<-tree(y~., dat)
 # plot the tree
@@ -210,6 +210,15 @@ text(out.tre)
 # predict response
 Y.tre<-predict(out.tre, dat, type="class")
 sum(Y.tre != as.factor(category)) / length(category)
+# train the tree using raw data
+dat2=data.frame(x=t(Quantile_TMT_Summary_Data), y=as.factor(category))
+out.tre2<-tree(y~., dat2)
+# plot the tree
+plot(out.tre2)
+text(out.tre2)
+# predict response
+Y.tre2<-predict(out.tre2, dat2, type="class")
+sum(Y.tre2 != as.factor(category)) / length(category)
 ```
 
 
