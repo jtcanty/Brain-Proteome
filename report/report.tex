@@ -78,11 +78,29 @@ We then quantitatively assessed the separation between the Control and disease-s
 \section{Linear modelling to identify differential expression}
 \label{sec:line-modell-ident}
 
-In order to identify differentially expressed genes between Control samples and disease-state samples, we utilized linear models. We  samples as covariates (with parameter coefficientsfor the control, AD, PD, and AD/PD samples) in order to determine the strength of association between each gene and the disease phenotypes. We used two separate linear modelling approaches. First, we considered the
+In order to identify differentially expressed genes between Control samples and disease-state samples, we utilized linear models. We  samples as covariates (with parameter coefficientsfor the control, AD, PD, and AD/PD samples) in order to determine the strength of association between each gene and the disease phenotypes. We used two separate linear modelling approaches. First, we modelled each trait as additive categorical random variables: 
+\begin{align*}
+E[Y^{i}|X^{i}] &= \beta_{Ctl} + \beta_{AD}x_{AD}^{i} + \beta_{PD}x_{PD}^{i} + \beta_{ADPD}x_{ADPD}^{i} \\  
+\end{align*}
+Where the $x^{i}s$ are indicator variables for the presence or absence of each disease-trait in a sample.Using this approach, we performed linear modelling on each gene, and obtained sample estimators $\hat{\beta}_{Ctl}, \hat{\beta}_{AD}, \hat{\beta}_{PD}, and \hat{\beta}_{ADPD}$. 
+
+We also considered that the changes in gene expression values in the ADPD case may not simply reflect additive changes in from both AD and PD in a linear model. To model this, we considered the comorbid case as an interaction effect between both the AD and PD traits:
+\begin{align*}
+E[Y^{i}|X^{i}] &= \beta_{Ctl} + \beta_{AD}x_{AD}^{i} + \beta_{PD}x_{PD}^{i} + \beta_{ADPD}x_{AD}^{i}x_{PD}^{i} \\  
+\end{align*}
+Repeating the same analysis as in the additive case, we obtained sample estimators for the AD, PD, and ADPD cases.
 
 \subsection{Volcano plots to identify differential expression}
 \label{subsec:volc-plots-ident}
 
+After obtaining sample estimators  $\hat{\beta}_{Ctl}, \hat{\beta}_{AD}, \hat{\beta}_{PD},$ and $\hat{\beta}_{ADPD}$ for each gene in the in Frontal Cortex and Anterior Cingulate Cyrus, we then computed the the log-fold change and p-value of the fold-change. We performed this calculation for each gene with the disease-state sample estimators against the Control sample estimator:
+\begin{align*}
+& log_{2}FC( \hat{\beta}_{Ctl},\hat{\beta}_{AD})		&Pval (\hat{ \beta}_{Ctl},\hat{\beta}_{AD}) \\  
+& log_{2}FC(\hat{ \beta}_{Ctl},\hat{\beta}_{PD})		& Pval(\hat{ \beta}_{Ctl},\hat{\beta}_{PD}) \\  
+& log_{2}FC( \hat{\beta}_{Ctl},\hat{\beta}_{ADPD})   		& Pval(\hat{ \beta}_{Ctl},\hat{\beta}_{ADPD}) \\  
+\end{align*}
+
+Next, we plotted our results using volcano plots. We defined a differential expressed gene as any gene expression value where the p-value was less than $\frac{0.05}{nGenes}$ and the $log_{2}$ fold-change was larger than $0.25$ \textbf{(Fig 3.A and B)}.
 
 \section{Weighted correlation network analysis}
 \label{sec:weight-corr-netw}
