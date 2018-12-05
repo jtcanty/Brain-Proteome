@@ -35,3 +35,11 @@ vignettes/*.pdf
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
 .Rproj.user
+
+# Generated LaTeX files https://stackoverflow.com/questions/15555097/make-git-ignore-generated-files
+report/report.pdf
+report/report.synctex.gz
+report/report.toc
+report/report.log
+report/report.out
+report/report.aux
