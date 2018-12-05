@@ -65,21 +65,23 @@ The dataset\cite{proteome} that we will be evaluating was obtained by performing
 \subsection{Data quality and Preprocessing}
 \label{subsec:data-qual-vari}
 
-We performed several quality control steps on the data-set before analysis. A large fraction of the gene rows contained batches that consisted of entirely NA or zero values that needed to be removed. We attribute these values to commonly reported issues of label-free mass spectrometry experiments. In order to preserve genes that contained peptide counts for all batches, we removed any gene that had NAs present in any batch. Next, we repeated the process by removing any gene that contained zeros, since these values would result in undefined log-transformed expression measures. In the Frontal Cortex, this process resulted in a final gene count of $6,004$ from an original dataset of $10,100$ genes. In the Anterior Cingulate Gyrus, this resulted in a final gene count of $6230$ genes. 
+We performed several quality control steps on the data-set before analysis. A large fraction of the gene rows contained batches that consisted of entirely NA or zero values that needed to be removed. We attribute these values to commonly reported issues of label-free mass spectrometry experiments that involve probe bias and reduced coverage of peptides. In order to preserve genes that contained peptide counts for all batches, we removed any gene that had NAs present in any batch. Next, we repeated the process by removing any gene that contained zeros, since these values would result in undefined log-transformed expression measures. In the Frontal Cortex, this process resulted in a final gene count of $6,004$ from an original dataset of $10,100$ genes. In the Anterior Cingulate Gyrus, this resulted in a final gene count of $6230$ genes. 
 
 \subsection{Exploratory analysis}
 \label{subsec:exploratory-analysis}
 
+In order to assess our processed data, we visualized the distribution of all fold-change (FC) gene expression values for each patient sample across all disease traits (Ctl, AD, PD, and ADPD) (Fig.1A). Upon inspection of the plots, we noticed that all samples had FC gene expression values that were centered around zero, indicating that the experimental effects between batches were significantly reduced by normalizing against a GIS for each batch. However, for a fraction of patient samples, we still observed significant FC gene expression outliers. 
 
+Next, we performed Principle Component Analysis (PCA) on the samples in both the Frontal Cortex and the Anterior Cingulate Gyrus (Fig.2A & B. A PCA plot of all disease traits did not indicate any clear separation of classes in both tissues. In order to simplify visualization, we then generated pairwise PCA plots between the Control samples and disease-state samples in both tissues (Fig.2C & D). In both tissue samples, we observed that clear separation of the Control and AD samples. Similarly, we observed separation of the Control and comorbid ADPD samples. However, when when we analyzed the Control and PD samples, we did not observe clear separation between the two traits.
+
+We then quantitatively assessed the separation between the Control and disease-state samples by applying an Support Vector Machine (SVM) classifier to the PCA plots. 
 
 \section{Linear modelling to identify differential expression}
 \label{sec:line-modell-ident}
 
-We will utilize linear models using samples as covariates (with parameter coefficients for the control, AD, PD, and AD/PD samples) in order to determine the strength of association between each gene and the disease phenotypes. Finally, we will identify differentially expressed genes relative to the control samples for each phenotype using  volcano-plots.
+In order to identify differentially expressed genes between Control samples and disease-state samples, we utilized linear models. We  samples as covariates (with parameter coefficientsfor the control, AD, PD, and AD/PD samples) in order to determine the strength of association between each gene and the disease phenotypes. We used two separate linear modelling approaches. First, we considered the
 
 
-\subsection{Model definitions}
-\label{subsec:model-definitions}
 
 \subsection{Volcano plots to identify differential expression}
 \label{subsec:volc-plots-ident}
@@ -89,20 +91,6 @@ We will utilize linear models using samples as covariates (with parameter coeffi
 \label{sec:weight-corr-netw}
 
  Using the candidate differentially expressed genes for the PD, AD, and PD/AD disease phenotypes, we will apply weighted correlation network analysis in order to determine if the candidate genes exhibit interesting coexpression patterns. First, using the available WGNA R-package\cite{Langfelder2008}, we will determine whether there are interesting coexpression clusterings between differentially expressed genes for each phenotype. Next, we will assess the clustering size/structure and compare these properties between phenotypes.
-
-
-\subsection{Coexpression clusterings for each phenotype}
-\label{subsec:coexpr-clust-each}
-
-\subsubsection{Coexpression clusterings for Alzheimer's}
-\label{subsubsec:coexpr-clust-alzh}
-
-\subsubsection{Coexpression clustering for Parkinson's}
-\label{subsubsec:coexpr-clust-park}
-
-\subsubsection{Coexpression clusterings for both Alzheimer's and Parkinson's}
-\label{subsubsec:coexpr-clust-both}
-
 
 \subsection{Analysis of coexpression clusterings}
 \label{subsec:analys-coexpr-clust}
@@ -114,13 +102,10 @@ We will utilize linear models using samples as covariates (with parameter coeffi
 \label{subsec:comp-clust-betw}
 
 
-
-
 \section{Biological functions of differentially expressed genes}
 \label{sec:biol-funct-diff}
 
 Using the PANTHER gene ontology database, we identify the functional classifications of the differential expressed genes. We will perform this analysis between all phenotypes in order to comment on genes that may have unique biological roles related to PD, AD, and PD/AD disease states.
-
 
 
 \subsection{PANTHER gene ontology database}
@@ -135,23 +120,6 @@ The PANTHER project, which we used to identify the biological functions of the d
 \subsection{Functional classifications of differentially expressed genes}
 \label{subsec:funct-class-diff}
 
-\subsubsection{Biological differences between Alzheimer's only and controls}
-\label{subsubsec:biol-diff-betw}
-
-\subsubsection{Biological differences between Parkinson's only and controls}
-\label{subsubsec:biol-diff-betw-1}
-
-\subsubsection{Biological differences between controls and combined Alzheimer's and Parkinson's}
-\label{subsubsec:biol-diff-betw-2}
-
-\subsubsection{Biological differences between Alzheimer's only and Parkinson's only}
-\label{subsubsec:biol-diff-betw-3}
-
-\subsubsection{Biological differences between Alzheimer's only and Alzheimer's with Parkinson's}
-\label{subsubsec:biol-diff-betw-4}
-
-\subsubsection{Biological differences between Parkinson's only and Parkinson's with Alzheimer's}
-\label{subsubsec:biol-diff-betw-5}
 
 \pagebreak
 
