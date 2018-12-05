@@ -59,8 +59,7 @@ The dataset\cite{proteome} that we will be evaluating was obtained by performing
 \section{Exploratory analysis and preprocessing}
 \label{sec:expl-analys-prepr}
 
- In the initial portion of this project, we will assess data quality and phenotype and  inter-batch variability by box-plot visualization. We will then compare different normalization procedures such as loess, full-quantile, and upper-quantile when applied between samples. Next, we will apply PCA and MDS methods in order to determine if there is clustering of samples based on the disease phenotype.
-
+ In the initial portion of this project, we will assess data quality, phenotype and  inter-batch variability by box-plot visualization. We will then assess the raw data and apply quantile normalization samples. Finally, we assess the whether or not disease-trait groups can be discriminated based on gene expression values by applying dimensionality reduction methods. 
 
 \subsection{Data quality and Preprocessing}
 \label{subsec:data-qual-vari}
@@ -70,18 +69,16 @@ We performed several quality control steps on the data-set before analysis. A la
 \subsection{Exploratory analysis}
 \label{subsec:exploratory-analysis}
 
-In order to assess our processed data, we visualized the distribution of all fold-change (FC) gene expression values for each patient sample across all disease traits (Ctl, AD, PD, and ADPD) (Fig.1A). Upon inspection of the plots, we noticed that all samples had FC gene expression values that were centered around zero, indicating that the experimental effects between batches were significantly reduced by normalizing against a GIS for each batch. However, for a fraction of patient samples, we still observed significant FC gene expression outliers. 
+In order to assess our processed data, we visualized the distribution of all fold-change (FC) gene expression values for each patient sample across all disease traits (Ctl, AD, PD, and ADPD) \textbf{ (Fig.1A)}. Upon inspection of the plots, we noticed that all samples had FC gene expression values that were centered around zero, indicating that the experimental effects between batches were significantly reduced by normalizing against a GIS for each batch. However, for a fraction of patient samples, we still observed significant FC gene expression outliers. 
 
-Next, we performed Principle Component Analysis (PCA) on the samples in both the Frontal Cortex and the Anterior Cingulate Gyrus (Fig.2A and B. A PCA plot of all disease traits did not indicate any clear separation of classes in both tissues. In order to simplify visualization, we then generated pairwise PCA plots between the Control samples and disease-state samples in both tissues (Fig.2C and D). In both tissue samples, we observed that clear separation of the Control and AD samples. Similarly, we observed separation of the Control and comorbid ADPD samples. However, when when we analyzed the Control and PD samples, we did not observe clear separation between the two traits.
+Next, we performed Principle Component Analysis (PCA) on the samples in both the Frontal Cortex and the Anterior Cingulate Gyrus \textbf{(Fig.2A and B)}. A PCA plot of all disease traits did not indicate any clear separation of classes in both tissues. In order to simplify visualization, we then generated pairwise PCA plots between the Control samples and disease-state samples in both tissues \textbf{ (Fig.2C and D)}. In both tissue samples, we observed that clear separation of the Control and AD samples. Similarly, we observed separation of the Control and comorbid ADPD samples. However, when when we analyzed the Control and PD samples, we did not observe clear separation between the two traits.
 
-We then quantitatively assessed the separation between the Control and disease-state samples by applying an Support Vector Machine (SVM) classifier to the PCA plots. 
+We then quantitatively assessed the separation between the Control and disease-state samples by applying a Support Vector Machine (SVM) classifier to the PCA plots \textbf{(Fig.2 E and F)}. Consistent with our observations from the PCA plots, we observed that the SVM was able to accurately classify Control samples versus AD and comorbid PDAD samples. However, SVM classifier performed substantially worse with PD samples. Based on these observations, we concluded that the PD samples do not exhibit noticeable variances in gene expression compared to Control samples.
 
 \section{Linear modelling to identify differential expression}
 \label{sec:line-modell-ident}
 
 In order to identify differentially expressed genes between Control samples and disease-state samples, we utilized linear models. We  samples as covariates (with parameter coefficientsfor the control, AD, PD, and AD/PD samples) in order to determine the strength of association between each gene and the disease phenotypes. We used two separate linear modelling approaches. First, we considered the
-
-
 
 \subsection{Volcano plots to identify differential expression}
 \label{subsec:volc-plots-ident}
