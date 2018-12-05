@@ -37,7 +37,7 @@ numNans <- rowSums(nanIdx)
 filtered_TMT_Summary_Data <- TMT_Summary_Data[numNans < 1,]
 
 # Save the data
-save(filtered_TMT_Summary_Data, file='filtered_TMT_Summary_Data.RData')
+save(filtered_TMT_Summary_Data, file='filtered_TMT_Summary_Data_FC.RData')
 ```
 
 ```{r Create Summarized Experiment, include=TRUE}
@@ -68,7 +68,9 @@ batchColors = rep(c('red','red','black','black','blue','blue','green','green'), 
 p <- ggplot(stack(Raw_TMT_Summary_Data), aes(x = ind, y = values)) + geom_boxplot(aes(fill=values)) + geom_point(aes(color=ind))
 p + scale_color_manual(values= batchColors) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-    xlab('Patient sample') + ylab('Log-fold expression')
+    xlab('Patient sample') + ylab(expression(paste(Log[10],'-fold expression'))) +
+    ggtitle('Frontal Cortex Tissue Samples - Unprocessed Data') +
+    ggsave(file='Fig1a.png')
 
 # Quantile normalization of data
 Quantile_TMT_Summary_Data <- as.data.frame(normalizeBetweenArrays(filtered_TMT_Summary_Data[,7:nCols], method='quantile'))
@@ -76,7 +78,10 @@ Quantile_TMT_Summary_Data <- as.data.frame(normalizeBetweenArrays(filtered_TMT_S
 p2 <- ggplot(stack(Quantile_TMT_Summary_Data), aes(x = ind, y = values)) + geom_boxplot(aes(fill=values)) + geom_point(aes(color=ind))
 p2 + scale_color_manual(values= batchColors) +
      theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-     xlab('Patient sample') + ylab('Log-fold expression')
+     xlab('Patient sample') + ylab(expression(paste(Log[10],'-fold expression'))) +
+     ggtitle('Frontal Cortex Tissue Samples - Quantile Normalized Data') +
+     ggsave(file='Fig1b.png')
+    
 
 # Plot summary of statistics
 summary(Quantile_TMT_Summary_Data)

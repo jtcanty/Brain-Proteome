@@ -1,0 +1,27 @@
+\contentsline {section}{Abstract}{1}{section*.1}
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}
+\contentsline {section}{\numberline {2}Dataset}{3}{section.2}
+\contentsline {section}{\numberline {3}Exploratory analysis and preprocessing}{3}{section.3}
+\contentsline {subsection}{\numberline { 1.}Data quality and variability}{3}{subsection.3.1}
+\contentsline {subsection}{\numberline { 2.}Preprocessing}{3}{subsection.3.2}
+\contentsline {subsection}{\numberline { 3.}Exploratory analysis}{3}{subsection.3.3}
+\contentsline {section}{\numberline {4}Linear modelling to identify differential expression}{3}{section.4}
+\contentsline {subsection}{\numberline { 1.}Model definitions}{3}{subsection.4.1}
+\contentsline {subsection}{\numberline { 2.}Volcano plots to identify differential expression}{3}{subsection.4.2}
+\contentsline {section}{\numberline {5}Weighted correlation network analysis}{3}{section.5}
+\contentsline {subsection}{\numberline { 1.}Coexpression clusterings for each phenotype}{4}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {(a)}Coexpression clusterings for Alzheimer's}{4}{subsubsection.5.1.1}
+\contentsline {subsubsection}{\numberline {(b)}Coexpression clustering for Parkinson's}{4}{subsubsection.5.1.2}
+\contentsline {subsubsection}{\numberline {(c)}Coexpression clusterings for both Alzheimer's and Parkinson's}{4}{subsubsection.5.1.3}
+\contentsline {subsection}{\numberline { 2.}Analysis of coexpression clusterings}{4}{subsection.5.2}
+\contentsline {subsubsection}{\numberline {(a)}Size and structure of clusterings}{4}{subsubsection.5.2.1}
+\contentsline {subsubsection}{\numberline {(b)}Comparison of clusters between phenotypes}{4}{subsubsection.5.2.2}
+\contentsline {section}{\numberline {6}Biological functions of differentially expressed genes}{4}{section.6}
+\contentsline {subsection}{\numberline { 1.}PANTHER gene ontology database}{4}{subsection.6.1}
+\contentsline {subsection}{\numberline { 2.}Functional classifications of differentially expressed genes}{4}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {(a)}Biological differences between Alzheimer's only and controls}{4}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {(b)}Biological differences between Parkinson's only and controls}{4}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {(c)}Biological differences between controls and combined Alzheimer's and Parkinson's}{4}{subsubsection.6.2.3}
+\contentsline {subsubsection}{\numberline {(d)}Biological differences between Alzheimer's only and Parkinson's only}{4}{subsubsection.6.2.4}
+\contentsline {subsubsection}{\numberline {(e)}Biological differences between Alzheimer's only and Alzheimer's with Parkinson's}{4}{subsubsection.6.2.5}
+\contentsline {subsubsection}{\numberline {(f)}Biological differences between Parkinson's only and Parkinson's with Alzheimer's}{4}{subsubsection.6.2.6}
