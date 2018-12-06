@@ -4,24 +4,21 @@ output: pdf_document
 ---
 
 ```{r Import libaries, echo=FALSE, include=FALSE}
-library(readxl)
-library(ggplot2)
-library(SummarizedExperiment)
-library(dplyr)
-library(rafalib)
-library(limma)
+library("readxl")
+library("ggplot2")
+library("SummarizedExperiment")
+library("dplyr")
+library("rafalib")
+library("limma")
+library("e1071")
 ```
 
 ```{r Open TMT Data Summary, include=TRUE}
-# FC - Frontal Cortex
 # ACG = Anterior Cingulate Gyrus
-FC_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summary_Data.xlsx", sheet=1, skip=2)
-ACG_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summary_Data.xlsx", sheet=2, skip=2)
+ACG_Data <- read_excel("../data/TMT_Summary_Data.xlsx", sheet=2, skip=2)
 
 # READ:    Comment out depending on data-set of interest
 TMT_Summary_Data <- ACG_Data
-#TMT_Summary_Data <- FC_Data
-View(TMT_Summary_Data)
 ```
 
 ```{r Preprocess dataset, include=TRUE}
@@ -135,8 +132,27 @@ legend('bottomright',fill=c('black','green'), legend = c('Ctl','PD_AD'))
 dev.off()
 ```
 
+```{r}
+# plot pairwise classification
+CP <- data.frame(x=PCA_CtlvsPD$x[,1:2], y=as.factor(c(rep("Ctl",10),rep("PD",10))))
+CA <- data.frame(x=PCA_CtlvsAD$x[,1:2], y=as.factor(c(rep("Ctl",10),rep("AD",10))))
+CAP <- data.frame(x=PCA_CtlvsADPD$x[,1:2], y=as.factor(c(rep("Ctl",10),rep("ADPD",10))))
 
+svmfit=svm(y~., data=CP, kernel="radial", gamma=0.1, cost=10) 
+png('Fig4a-Anterior-Cingulate-Gyrus_CtlvsPD.png')
+plot(svmfit, CP, pch=16)
+dev.off()
+table(true=CP[, "y"], pred=predict(svmfit, newdata=CP[,]))
 
+svmfit=svm(y~., data=CA, kernel="radial", gamma=0.1, cost=10)
+png('Fig4b-Anterior-Cingulate-Gyrus_CtlvsAD.png')
+plot(svmfit, CA)
+dev.off()
+table(true=CA[, "y"], pred=predict(svmfit, newdata=CA[,]))
 
-
-
+svmfit=svm(y~., data=CAP, kernel="radial", gamma=0.1, cost=10)
+png('Fig4c-Anterior-Cingulate-Gyrus_CtlvsADPD.png')
+plot(svmfit, CAP)
+dev.off()
+table(true=CAP[, "y"], pred=predict(svmfit, newdata=CAP[,]))
+```

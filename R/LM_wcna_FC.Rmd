@@ -4,8 +4,10 @@ output: odf_document
 ---
 
 ```{r Import Libraries, include=FALSE}
-library(limma)
-library(ggplot2)
+library("limma")
+library("ggplot2")
+library("WGCNA")
+options(stringsAsFactors = FALSE);
 ```
 
 ```{r Load Data, include=TRUE}
@@ -112,28 +114,6 @@ g6 = ggplot(data=adpdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. ADPD')
 g6
 ```
-```{r}
-
-
-install.packages("BiocManager") 
-BiocManager::install("WGCNA") 
-```
-
-
-```{r}
-
-
-library(WGCNA)
-options(stringsAsFactors = FALSE);
-```
-
-
-
-
-
-
-
-
 
 ```{r}
 
