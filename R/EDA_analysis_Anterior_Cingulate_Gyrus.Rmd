@@ -147,7 +147,7 @@ svmfitCP=svm(y~., data=CP, kernel="radial", gamma=0.1, cost=10)
 png('FC SVM for Ctl-PD.png')
 plot(svmfit, CP, pch=16)
 par(xpd = TRUE)
-par(xpd = TRUElegend('topleft',pch = c(21,4), legend = c('non support vector','support vector'))
+legend('topleft',pch = c(21,4), legend = c('non support vector','support vector'))
 dev.off()
 
 svmfitCA=svm(y~., data=CA, kernel="radial", gamma=0.1, cost=10) 
