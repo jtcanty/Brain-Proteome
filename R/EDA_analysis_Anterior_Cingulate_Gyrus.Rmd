@@ -19,8 +19,8 @@ FC_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summa
 ACG_Data <- read_excel("/home/john/Documents/Coding/Brain-Proteome/data/TMT_Summary_Data.xlsx", sheet=2, skip=2)
 
 # READ:    Comment out depending on data-set of interest
-#TMT_Summary_Data <- ACG_Data
-TMT_Summary_Data <- FC_Data
+TMT_Summary_Data <- ACG_Data
+#TMT_Summary_Data <- FC_Data
 View(TMT_Summary_Data)
 ```
 
@@ -69,8 +69,8 @@ p <- ggplot(stack(Raw_TMT_Summary_Data), aes(x = ind, y = values)) + geom_boxplo
 p + scale_color_manual(values= batchColors) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
     xlab('Patient sample') + ylab(expression(paste(Log[10],'-fold expression'))) +
-    ggtitle('Frontal Cortex Tissue Samples - Unprocessed Data') +
-    ggsave(file='Fig1a-FrontalCortex.png')
+    ggtitle('Anterior Cingulate Gyrus Tissue Samples - Unprocessed Data') +
+    ggsave(file='Fig1a-AnteriorCingulateGyrus.png')
 
 # Quantile normalization of data
 Quantile_TMT_Summary_Data <- as.data.frame(normalizeBetweenArrays(filtered_TMT_Summary_Data[,7:nCols], method='quantile'))
@@ -79,8 +79,8 @@ p2 <- ggplot(stack(Quantile_TMT_Summary_Data), aes(x = ind, y = values)) + geom_
 p2 + scale_color_manual(values= batchColors) +
      theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
      xlab('Patient sample') + ylab(expression(paste(Log[10],'-fold expression'))) +
-     ggtitle('Frontal Cortex Tissue Samples - Quantile Normalized Data') +
-     ggsave(file='Fig1b-FrontalCortex.png')
+     ggtitle('Anterior Cingulate Gyrus Samples - Quantile Normalized Data') +
+     ggsave(file='Fig1b-AnteriorCingulateGyrus.png')
     
 
 # Plot summary of statistics
@@ -102,7 +102,7 @@ Ctl_vs_AD_PD <- cbind(Ctl, AD_PD)
 
 # PCA analysis for all classes
 PCA <- prcomp(t(qData))
-png('Fig2-Frontal-Cortex.png')
+png('Fig2-Anterior-Cingulate-Gyrus.png')
 plot(PCA$x[,1], PCA$x[,2], pch=16, col=batchColors, xlab='PCA 1', ylab='PCA 2')
 dev.off()
 
@@ -116,19 +116,19 @@ CtlvsPD_Colors <- c(rep('black',10), rep('blue', 10))
 CtlvsAD_Colors <- c(rep('black',10), rep('red', 10))
 CtlvsPDAD_Colors <- c(rep('black',10), rep('green', 10))
 
-png('Fig3a-Frontal-Cortex_CtlvsPD.png')
+png('Fig3a-Anterior-Cingulate-Gyrus_CtlvsPD.png')
 pairs(PCA_CtlvsPD$x[,1:3], col=CtlvsPD_Colors, pch=16, oma=c(3,3,3,15))
 par(xpd = TRUE)
 legend('bottomright',fill=c('black','blue'), legend = c('Ctl','PD'))
 dev.off()
 
-png('Fig3b-Frontal-Cortex_CtlvsAD.png')
+png('Fig3b-Anterior-Cingulate-Gyrus_CtlvsAD.png')
 pairs(PCA_CtlvsAD$x[,1:3], col=CtlvsAD_Colors, pch=16, oma=c(3,3,3,15))
 par(xpd = TRUE)
 legend('bottomright',fill=c('black','red'), legend = c('Ctl','AD'))
 dev.off()
 
-png('Fig3c-Frontal-Cortex_CtlvsADPD.png')
+png('Fig3c-Anterior-Cingulate-Gyrus_CtlvsADPD.png')
 pairs(PCA_CtlvsADPD$x[,1:3], col=CtlvsPDAD_Colors, pch=16, oma=c(3,3,3,15))
 par(xpd = TRUE)
 legend('bottomright',fill=c('black','green'), legend = c('Ctl','PD_AD'))
