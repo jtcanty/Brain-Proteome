@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+
+\bibitem{Langfelder2008}
+{\sc P.~Langfelder and S.~Horvath}, {\em Wgcna: an r package for weighted
+  correlation network analysis}, BMC Bioinformatics, 9 (2008), p.~559.
+
+\bibitem{PANTHER}
+{\sc H.~Mi, A.~Muruganujan, J.~T. Casagrande, and P.~D. Thomas}, {\em
+  Large-scale gene function analysis with the panther classification system},
+  Nature Protocols, 8 (2013/07/18/online).
+
+\bibitem{proteome}
+{\sc L.~Ping, D.~M. Duong, L.~Yin, M.~Gearing, J.~J. Lah, A.~I. Levey, and
+  N.~T. Seyfried}, {\em Global quantitative analysis of the human brain
+  proteome in alzheimer’s and parkinson’s disease}, Scientific Data, 5
+  (2018/03/13/online).
+
+\end{thebibliography}
