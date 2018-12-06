@@ -11,6 +11,7 @@ library("dplyr")
 library("rafalib")
 library("limma")
 library("e1071")
+library("xtable")
 ```
 
 ```{r Open TMT Data Summary, include=TRUE}
@@ -155,4 +156,8 @@ png('Fig4c-Anterior-Cingulate-Gyrus_CtlvsADPD.png')
 plot(svmfit, CAP)
 dev.off()
 table(true=CAP[, "y"], pred=predict(svmfit, newdata=CAP[,]))
+
+xtable(table(true=CP[, "y"], pred=predict(svmfit, newdata=CP[,])))
+xtable(table(true=CA[, "y"], pred=predict(svmfit, newdata=CA[,])))
+xtable(table(true=CAP[, "y"], pred=predict(svmfit, newdata=CAP[,])))
 ```
