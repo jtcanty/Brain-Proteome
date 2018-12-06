@@ -47,6 +47,13 @@ contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=intDesign)
 intFit2 <- contrasts.fit(intFit, contrast.matrix)
 intFit2 <- eBayes(intFit2)
 topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
+
+# Extra contrast matrix for the interaction
+contrast.matrix <- makeContrasts((ADPD+AD+PD)-Ctl, levels=intDesign)
+intFit3 <- contrasts.fit(intFit, contrast.matrix)
+intFit3 <- eBayes(intFit3)
+intFit3 <- eBayes(intFit3)
+topGenesInt <- topTable(intFit3, coef=1, adjust="BH")
 ```
 
 ```{r Volcano plot, include=TRUE}
@@ -59,6 +66,8 @@ adIntGenes <- topTable(intFit2, coef=1, number=1000000, sort.by="logFC")
 pdIntGenes <- topTable(intFit2, coef=2, number=1000000, sort.by="logFC")
 adpdIntGenes <- topTable(intFit2, coef=3, number=1000000, sort.by="logFC")
 
+adpdSumIntGenes <- topTable(intFit3, coef=1, number=1000000, sort.by="logFC")
+
 # Add compute expressed genes threshold (TRUE is differentially expressed)
 adAddGenes$threshold = as.factor(abs(adAddGenes$logFC) > 0.25 & adAddGenes$P.Value < 0.05/nGenes)
 pdAddGenes$threshold = as.factor(abs(pdAddGenes$logFC) > 0.25 & pdAddGenes$P.Value < 0.05/nGenes)
@@ -67,6 +76,8 @@ adpdAddGenes$threshold = as.factor(abs(adpdAddGenes$logFC) > 0.25 & adpdAddGenes
 adIntGenes$threshold = as.factor(abs(adIntGenes$logFC) > 0.25 & adIntGenes$P.Value < 0.05/nGenes)
 pdIntGenes$threshold = as.factor(abs(pdIntGenes$logFC) > 0.25 & pdIntGenes$P.Value < 0.05/nGenes)
 adpdIntGenes$threshold = as.factor(abs(adpdIntGenes$logFC) > 0.25 & adpdIntGenes$P.Value < 0.05/nGenes)
+
+adpdSumIntGenes$threshold = as.factor(abs(adpdSumIntGenes$logFC) > 0.25 & adpdSumIntGenes$P.Value < 0.05/nGenes)
 
 # Generate volcano plots using the additive model.
 g1 = ggplot(data=adAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
@@ -111,6 +122,13 @@ g6 = ggplot(data=adpdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. ADPD')
 g6
+
+g7 = ggplot(data=adpdSumIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Sum of AD + PD + ADPD Interaction model: Ctrl vs. ADPD')
+g7
 ```
 
 ```{r}
