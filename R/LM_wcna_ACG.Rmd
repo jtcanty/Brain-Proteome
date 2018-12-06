@@ -11,8 +11,8 @@ options(stringsAsFactors = FALSE)
 ```
 
 ```{r Load Data, include=TRUE}
-load("../data/filtered_TMT_Summary_Data_FC.RData")
-load("../data/Quantile_TMT_Summary_Data_FC.RData")
+load("../data/filtered_TMT_Summary_Data_ACG.RData")
+load("../data/Quantile_TMT_Summary_Data_ACG.RData")
 
 ```
 
@@ -85,21 +85,21 @@ g1 = ggplot(data=adAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) 
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. AD')
-g1 + ggsave(file='../Figures/FrontalCortex_Volcano_AdditiveModel_CtrlvsAD.png')
+g1 + ggsave(file='../Figures/ACG_Volcano_AdditiveModel_CtrlvsAD.png')
 
 g2 = ggplot(data=pdAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
   geom_point(alpha=0.4, size=1.75) +
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. PD')
-g2 + ggsave(file='../Figures/FrontalCortex_Volcano_AdditiveModel_CtrlvsPD.png')
+g2 + ggsave(file='../Figures/ACG_Volcano_AdditiveModel_CtrlvsPD.png')
 
 g3 = ggplot(data=adpdAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
   geom_point(alpha=0.4, size=1.75) +
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. ADPD')
-g3 + ggsave(file='../Figures/FrontalCortex_Volcano_AdditiveModel_CtrlvsADPD.png')
+g3 + ggsave(file='../Figures/ACG_Volcano_AdditiveModel_CtrlvsADPD.png')
 
 # Generate volcano plots using the interaction model.
 g4 = ggplot(data=adIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
@@ -107,14 +107,14 @@ g4 = ggplot(data=adIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) 
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. AD')
-g4 + ggsave(file='../Figures/FrontalCortex_Volcano_InteractionModel_CtrlvsAD.png')
+g4 + ggsave(file='../Figures/ACG_Volcano_InteractionModel_CtrlvsAD.png')
 
 g5 = ggplot(data=pdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
   geom_point(alpha=0.4, size=1.75) +
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. PD')
-g5 + ggsave(file='../Figures/FrontalCortex_Volcano_InteractionModel_CtrlvsPD.png')
+g5 + ggsave(file='../Figures/ACG_Volcano_InteractionModel_CtrlvsPD.png')
 
 g6 = ggplot(data=adpdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
   geom_point(alpha=0.4, size=1.75) +
@@ -128,7 +128,7 @@ g7 = ggplot(data=adpdSumIntGenes, aes(x=logFC, y=-log10(P.Value), colour=thresho
   theme(legend.position = "none") +
   xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
   xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. AD + PD + ADPD')
-g7 + ggsave(file='../Figures/FrontalCortex_Volcano_InteractionModel_CtrlvsSum.png')
+g7 + ggsave(file='../Figures/ACG_InteractionModel_CtrlvsSum.png')
 ```
 
 ```{r}
