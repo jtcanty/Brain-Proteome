@@ -7,11 +7,11 @@ output: odf_document
 library("limma")
 library("ggplot2")
 library("WGCNA")
-options(stringsAsFactors = FALSE);
+options(stringsAsFactors = FALSE)
 ```
 
 ```{r Load Data, include=TRUE}
-load("./filtered_TMT_Summary_Data.RData")
+load("../data/filtered_TMT_Summary_Data_FC.RData")
 ```
 
 ```{r Additive Linear Model, include=TRUE}
@@ -46,8 +46,6 @@ intFit2 <- contrasts.fit(intFit, contrast.matrix)
 intFit2 <- eBayes(intFit2)
 topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
 ```
-
-
 
 ```{r Volcano plot, include=TRUE}
 # Generate Log-fold changes
@@ -116,7 +114,6 @@ g6
 ```{r}
 # Get all differentially expressed genes into a dataframe
 
-
 ad_ctl <-  as.data.frame((filtered_TMT_Summary_Data[as.integer(rownames(adAddGenes[which(adAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 
 rownames(ad_ctl) <- ad_ctl[,1]
@@ -126,16 +123,10 @@ ad_ctl_data <- t(ad_ctl_data)
 
 ```
 
-
-
 ```{r}
 gsg = goodSamplesGenes(ad_ctl_data, verbose = 3);
 gsg$allOK
-
-
 ```
-
-
 
 ```{r}
 # Choose a set of soft-thresholding powers
@@ -159,13 +150,9 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
 main = paste("Mean connectivity"))
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
-
-
 ```
 
-
 ```{r}
-
 net = blockwiseModules(ad_ctl_data, power = 18,
 TOMType = "unsigned", minModuleSize = 1,
 reassignThreshold = 0, mergeCutHeight = 0.1,
@@ -173,21 +160,13 @@ numericLabels = TRUE, pamRespectsDendro = FALSE,
 saveTOMs = TRUE,
 saveTOMFileBase = "ad_ctl_tom",
 verbose = 3)
-
-
-
 ```
 
-
-
 ```{r}
-
 table(net$colors)
-
 ```
 
 ```{r}
-
 # open a graphics window
 sizeGrWindow(12, 9)
 # Convert labels to colors for plotting
@@ -197,21 +176,18 @@ plotDendroAndColors(net$dendrograms[[1]], mergedColors[net$blockGenes[[1]]],
 "Module colors",
 dendroLabels = FALSE, hang = 0.03,
 addGuide = TRUE, guideHang = 0.05)
-
 ```
+
 ```{r}
 moduleLabels = net$colors
 moduleColors = labels2colors(net$colors)
 MEs = net$MEs;
 geneTree = net$dendrograms[[1]];
 save(MEs, moduleLabels, moduleColors, geneTree,
-file = "FemaleLiver-02-networkConstruction-auto.RData")
-
+file = "../data/WGCNA_FC.RData")
 ```
 
-
 ```{r}
-
 # Might have to do manual construction of blocks to get the maximally connected genes
 
 get_max_conn_genes <- function(data, softPower, min_mod_size){
@@ -246,7 +222,6 @@ get_max_conn_genes <- function(data, softPower, min_mod_size){
   addGuide = TRUE, guideHang = 0.05,
   main = "Gene dendrogram and module colors")
   
-  
   # Maximally connected gene, let's call it mc_gene
   # For each cluster, find elements in that cluster, sum up the corresponding row from the     adjacency matrix.
   mc_genes = list()
@@ -266,17 +241,12 @@ get_max_conn_genes <- function(data, softPower, min_mod_size){
   
   return(mc_genes)
 }
-
-
 ```
 
-
-# AD vs Ctrl, additive model
 ```{r}
+# AD vs Ctrl, additive model
 
 # Get all differentially expressed genes into a dataframe
-
-
 ad_ctl <-  as.data.frame((filtered_TMT_Summary_Data[as.integer(rownames(adAddGenes[which(adAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 
 rownames(ad_ctl) <- ad_ctl[,1]
@@ -286,7 +256,6 @@ ad_ctl_data <- t(ad_ctl_data)
 
 gsg = goodSamplesGenes(ad_ctl_data, verbose = 3);
 gsg$allOK
-
 
 # Choose a set of soft-thresholding powers
 powers = c(c(1:10), seq(from = 12, to=20, by=2))
@@ -309,24 +278,17 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
 main = paste("Mean connectivity"))
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
-
-
 ```
+
 ```{r}
-
-
 mc_genes = get_max_conn_genes(ad_ctl_data, 18, 1)
 unlist(mc_genes)
-
 ```
 
-
-# PD vs Ctrl, additive model
 ```{r}
+# PD vs Ctrl, additive model
+
 # Get all differentially expressed genes into a dataframe
-
-
-
 pd_ctl <-  as.data.frame((filtered_TMT_Summary_Data[as.integer(rownames(pdAddGenes[which(pdAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 
 rownames(pd_ctl) <- pd_ctl[,1]
@@ -334,10 +296,8 @@ pd_ctl[,1] <- NULL
 pd_ctl_data <- pd_ctl[,-1]
 pd_ctl_data <- t(pd_ctl_data)
 
-
 #gsg = goodSamplesGenes(pd_ctl_data, verbose = 3);
 #gsg$allOK
-
 
 # Choose a set of soft-thresholding powers
 powers = c(c(1:10), seq(from = 12, to=20, by=2))
@@ -360,26 +320,19 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
 main = paste("Mean connectivity"))
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
-
-
-
-
 ```
 
 ```{r}
-
 #Analyze all of them since fewer than 3 genes
 
 rownames(pd_ctl)
-
 ```
 
-# ADPD vs Ctrl, additive model
+
 ```{r}
+# ADPD vs Ctrl, additive model
+
 # Get all differentially expressed genes into a dataframe
-
-
-
 adpd_ctl <-  as.data.frame((filtered_TMT_Summary_Data[as.integer(rownames(adpdAddGenes[which(adpdAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 
 rownames(adpd_ctl) <- adpd_ctl[,1]
@@ -387,10 +340,8 @@ adpd_ctl[,1] <- NULL
 adpd_ctl_data <- adpd_ctl[,-1]
 adpd_ctl_data <- t(adpd_ctl_data)
 
-
 #gsg = goodSamplesGenes(pd_ctl_data, verbose = 3);
 #gsg$allOK
-
 
 # Choose a set of soft-thresholding powers
 powers = c(c(1:10), seq(from = 12, to=20, by=2))
@@ -413,26 +364,17 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
 main = paste("Mean connectivity"))
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
-
-
-
-
 ```
+
 ```{r}
 mc_genes = get_max_conn_genes(ad_ctl_data, 14, 1)
 unlist(mc_genes)
-
-
 ```
 
-
-# AD vs Ctrl, interaction model
 ```{r}
-
+# AD vs Ctrl, interaction model
 
 # Get all differentially expressed genes into a dataframe
-
-
 ad_ctl <-  as.data.frame((filtered_TMT_Summary_Data[as.integer(rownames(adIntGenes[which(adIntGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 
 rownames(ad_ctl) <- ad_ctl[,1]
@@ -442,7 +384,6 @@ ad_ctl_data <- t(ad_ctl_data)
 
 gsg = goodSamplesGenes(ad_ctl_data, verbose = 3);
 gsg$allOK
-
 
 # Choose a set of soft-thresholding powers
 powers = c(c(1:10), seq(from = 12, to=20, by=2))
@@ -465,31 +406,23 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
 main = paste("Mean connectivity"))
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
-
-
-
 ```
 
-
 ```{r}
-
 mc_genes = get_max_conn_genes(ad_ctl_data, 18, 1)
 unlist(mc_genes)
-
 ```
-# PD vs Ctrl
+
 ```{r}
-# Same case, no differentially expressed genes
+# PD vs Ctrl
 
+# Same case, no differentially expressed genes
 ```
 
+```{r}
 # ADPD vs Ctrl
 
-```{r}
 # Get all differentially expressed genes into a dataframe
-
-
-
 adpd_ctl <-  as.data.frame((filtered_TMT_Summary_Data[as.integer(rownames(adpdIntGenes[which(adpdIntGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 
 rownames(adpd_ctl) <- adpd_ctl[,1]
@@ -497,10 +430,8 @@ adpd_ctl[,1] <- NULL
 adpd_ctl_data <- adpd_ctl[,-1]
 adpd_ctl_data <- t(adpd_ctl_data)
 
-
 gsg = goodSamplesGenes(adpd_ctl_data, verbose = 3);
 gsg$allOK
-
 
 # Choose a set of soft-thresholding powers
 powers = c(c(1:10), seq(from = 12, to=20, by=2))
@@ -523,14 +454,9 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
 main = paste("Mean connectivity"))
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
-
 ```
 
-
 ```{r}
-
 mc_genes = get_max_conn_genes(ad_ctl_data, 8, 1)
 unlist(mc_genes)
-
-
 ```

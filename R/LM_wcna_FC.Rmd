@@ -7,18 +7,18 @@ output: odf_document
 library("limma")
 library("ggplot2")
 library("WGCNA")
-options(stringsAsFactors = FALSE);
+options(stringsAsFactors = FALSE)
 ```
 
 ```{r Load Data, include=TRUE}
-load("filtered_TMT_Summary_Data.RData")
-load("quantile_TMT_Summary_Data2.RData") #FC
+load("../data/filtered_TMT_Summary_Data_FC.RData")
+load("../data/Quantile_TMT_Summary_Data_FC.RData")
 
 ```
 
 ```{r Additive Linear Model, include=TRUE}
-nCols <- ncol(Quantile_TMT_Summary_Data2)
-nGenes <- nrow(Quantile_TMT_Summary_Data2)
+nCols <- ncol(Quantile_TMT_Summary_Data)
+nGenes <- nrow(Quantile_TMT_Summary_Data)
 
 # additive linear model
 addBatchFactor <- c(2,2,1,1,3,3,4,4)
@@ -26,7 +26,7 @@ addDiseaseGroup <- factor(rep(addBatchFactor,5))
 addDesign <- model.matrix(~addDiseaseGroup + 0)
 colnames(addDesign) <- c("Ctl", "AD", "PD","ADPD")
 
-addFit <- lmFit(Quantile_TMT_Summary_Data2[,3:nCols], addDesign)
+addFit <- lmFit(Quantile_TMT_Summary_Data, addDesign)
 
 contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=addDesign)
 addFit2 <- contrasts.fit(addFit, contrast.matrix)
@@ -41,15 +41,13 @@ intDesign <- model.matrix(~Ctl + AD + PD + AD:PD + 0)
 intDesign <- intDesign[,2:5]
 colnames(intDesign) <- c("Ctl", "AD", "PD","ADPD")
 
-intFit <- lmFit(Quantile_TMT_Summary_Data2[,3:nCols], intDesign)
+intFit <- lmFit(Quantile_TMT_Summary_Data, intDesign)
 
 contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=intDesign)
 intFit2 <- contrasts.fit(intFit, contrast.matrix)
 intFit2 <- eBayes(intFit2)
 topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
 ```
-
-
 
 ```{r Volcano plot, include=TRUE}
 # Generate Log-fold changes
@@ -116,7 +114,6 @@ g6
 ```
 
 ```{r}
-
 # Might have to do manual construction of blocks to get the maximally connected genes
 
 get_max_conn_genes <- function(data, data_mat, ad_ctl_len, pd_ctl_len, adpd_ctl_len, softPower, min_mod_size){
@@ -208,28 +205,22 @@ get_max_conn_genes <- function(data, data_mat, ad_ctl_len, pd_ctl_len, adpd_ctl_
   MEs = mergedMEs;
   return(moduleLabels)
 }
-
-
 ```
 
-
-
 ```{r}
-
 # Get all differentially expressed genes into a dataframe
 
-
-ad_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(adAddGenes[which(adAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
+ad_ctl <-  as.data.frame((Quantile_TMT_Summary_Data[as.integer(rownames(adAddGenes[which(adAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 rownames(ad_ctl) <- ad_ctl[,1]
 ad_ctl_length = length(rownames(ad_ctl))
 ad_ctl[,1] <- NULL
 
-pd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(pdAddGenes[which(pdAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
+pd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data[as.integer(rownames(pdAddGenes[which(pdAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 rownames(pd_ctl) <- pd_ctl[,1]
 pd_ctl_length = length(rownames(pd_ctl))
 pd_ctl[,1] <- NULL
 
-adpd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(adpdAddGenes[which(adpdAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
+adpd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data[as.integer(rownames(adpdAddGenes[which(adpdAddGenes$threshold == TRUE),])), c(1,2,7:nCols)]))
 rownames(adpd_ctl) <- adpd_ctl[,1]
 adpd_ctl_length = length(rownames(adpd_ctl))
 adpd_ctl[,1] <- NULL
@@ -238,13 +229,11 @@ all_diff <- rbind(ad_ctl,pd_ctl,adpd_ctl)
 ```
 
 ```{r}
-
 all_diff_data <- all_diff[,-1]
 all_diff_data <- t(all_diff_data)
 
 gsg = goodSamplesGenes(all_diff_data, verbose = 3);
 gsg$allOK
-
 
 # Choose a set of soft-thresholding powers
 powers = c(c(1:10), seq(from = 12, to=20, by=2))
@@ -267,15 +256,9 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5],
 xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
 main = paste("Mean connectivity"))
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
-
-
 ```
 
-
-
-
 ```{r}
-
 module_labels = get_max_conn_genes(all_diff_data, all_diff, ad_ctl_length, pd_ctl_length, adpd_ctl_length, 18, 2)
 # For each cluster
 for(i in unique(module_labels)){
@@ -287,8 +270,4 @@ for(i in unique(module_labels)){
     print(c(from_ad, from_adpd))
 } 
 }
-
-
 ```
-
-
