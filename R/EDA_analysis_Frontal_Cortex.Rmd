@@ -133,31 +133,35 @@ legend('bottomright',fill=c('black','green'), legend = c('Ctl','PD_AD'))
 dev.off()
 ```
 
-```{r}
+```{r SVM, include=TRUE}
+#install.packages("e1071")
+#install.packages("xtable")
+library("e1071")
+library("xtable")
 # plot pairwise classification
 CP <- data.frame(x=PCA_CtlvsPD$x[,1:2], y=as.factor(c(rep("Ctl",10),rep("PD",10))))
 CA <- data.frame(x=PCA_CtlvsAD$x[,1:2], y=as.factor(c(rep("Ctl",10),rep("AD",10))))
 CAP <- data.frame(x=PCA_CtlvsADPD$x[,1:2], y=as.factor(c(rep("Ctl",10),rep("ADPD",10))))
 
-svmfit=svm(y~., data=CP, kernel="radial", gamma=0.1, cost=10) 
-png('../Figures/Fig4a-Frontal-Cortex_CtlvsPD.png')
+svmfitCP=svm(y~., data=CP, kernel="radial", gamma=0.1, cost=10)
+png('FC SVM for Ctl-PD.png')
 plot(svmfit, CP, pch=16)
+par(xpd = TRUE)
 dev.off()
-table(true=CP[, "y"], pred=predict(svmfit, newdata=CP[,]))
 
-svmfit=svm(y~., data=CA, kernel="radial", gamma=0.1, cost=10)
-png('../Figures/Fig4b-Frontal-Cortex_CtlvsAD.png')
+svmfitCA=svm(y~., data=CA, kernel="radial", gamma=0.1, cost=10) 
+png('FC SVM for Ctl-AD.png')
 plot(svmfit, CA)
+par(xpd = TRUE)
 dev.off()
-table(true=CA[, "y"], pred=predict(svmfit, newdata=CA[,]))
 
-svmfit=svm(y~., data=CAP, kernel="radial", gamma=0.1, cost=10)
-png('../Figures/Fig4c-Frontal-Cortex_CtlvsADPD.png')
+svmfitCAP=svm(y~., data=CAP, kernel="radial", gamma=0.1, cost=10) 
+png('FC SVM for Ctl-ADPD.png')
 plot(svmfit, CAP)
+par(xpd = TRUE)
 dev.off()
-table(true=CAP[, "y"], pred=predict(svmfit, newdata=CAP[,]))
 
-xtable(table(true=CP[, "y"], pred=predict(svmfit, newdata=CP[,])))
-xtable(table(true=CA[, "y"], pred=predict(svmfit, newdata=CA[,])))
-xtable(table(true=CAP[, "y"], pred=predict(svmfit, newdata=CAP[,])))
+xtable(table(true=CP[, "y"], pred=predict(svmfitCP, newdata=CP[,])))
+xtable(table(true=CA[, "y"], pred=predict(svmfitCA, newdata=CA[,])))
+xtable(table(true=CAP[, "y"], pred=predict(svmfitCAP, newdata=CAP[,])))
 ```
