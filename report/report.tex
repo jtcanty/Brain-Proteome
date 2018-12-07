@@ -2,6 +2,11 @@
 \input{./LaTeX_configuration/packagePreamble.sty}
 \input{./LaTeX_configuration/formattingPreamble.sty}
 \input{./LaTeX_configuration/mathPreamble.sty}
+\newcommand{\Pval}{\operatorname{Pval}}
+\newcommand{\AD}{\operatorname{AD}}
+\newcommand{\PD}{\operatorname{PD}}
+\newcommand{\ADPD}{\operatorname{ADPD}}
+\newcommand{\Ctl}{\operatorname{Ctl}}
 \input{./LaTeX_configuration/header.tex}
 
 % The command structure is as follows:
@@ -64,52 +69,324 @@ We performed several quality control steps on the data-set before analysis. A la
 \subsection{Exploratory analysis}
 \label{subsec:exploratory-analysis}
 
-In order to assess our processed data, we visualized the distribution of all fold-change (FC) gene expression values for each patient sample across all disease traits (Ctl, AD, PD, and ADPD) \textbf{ (Fig.1A)}. Upon inspection of the plots, we noticed that all samples had FC gene expression values that were centered around zero, indicating that the experimental effects between batches were significantly reduced by normalizing against a GIS for each batch. However, for a fraction of patient samples, we still observed significant FC gene expression outliers. 
 
-Next, we performed Principle Component Analysis (PCA) on the samples in both the Frontal Cortex and the Anterior Cingulate Gyrus \textbf{(Fig.2A and B)}. A PCA plot of all disease traits did not indicate any clear separation of classes in both tissues. In order to simplify visualization, we then generated pairwise PCA plots between the Control samples and disease-state samples in both tissues \textbf{ (Fig.2C and D)}. In both tissue samples, we observed that clear separation of the Control and AD samples. Similarly, we observed separation of the Control and comorbid ADPD samples. However, when when we analyzed the Control and PD samples, we did not observe clear separation between the two traits.
+In order to assess our processed data, we visualized the distribution of all fold-change (FC) protein expression values for each patient sample across all disease traits (Ctl, AD, PD, and ADPD) (see Figure \ref{fig1a}). Upon inspection of the plots, we noticed that all samples had FC protein expression values that were centered around zero, indicating that the experimental effects between batches were significantly reduced by normalizing against a GIS for each batch. However, for a fraction of patient samples, we still observed significant FC protein expression outliers. Therefore we use quantile normalization (see Figure \ref{fig1b}) to normalize the data across all batches and remove the outliers.\\
 
-We then quantitatively assessed the separation between the Control and disease-state samples by applying a Support Vector Machine (SVM) classifier to the PCA plots \textbf{(Fig.2 E and F)}. Consistent with our observations from the PCA plots, we observed that the SVM was able to accurately classify Control samples versus AD and comorbid PDAD samples. However, SVM classifier performed substantially worse with PD samples. Based on these observations, we concluded that the PD samples do not exhibit noticeable variances in gene expression compared to Control samples.
+\begin{figure}[H]
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\includegraphics[width=0.9\textwidth]{./Figures/Fig1a/Fig1a-FrontalCortex.png}\par
+\end{subfigure}%
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\includegraphics[width=0.9\textwidth]{./Figures/Fig1a/Fig1a-AnteriorCingulateGyrus.png}\par
+\end{subfigure}%
+\caption{\label{fig1a}
+Distribution of all fold-change protein expression values.}
+\end{figure}
+
+\begin{figure}[H]
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\includegraphics[width=0.9\textwidth]{./Figures/Fig1b/Fig1b-FrontalCortex.png}\par
+\end{subfigure}%
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\includegraphics[width=0.9\textwidth]{./Figures/Fig1b/Fig1b-AnteriorCingulateGyrus.png}\par
+\end{subfigure}%
+\caption{\label{fig1b}
+Quantile normalized data.}
+\end{figure}
+
+Next, we performed Principle Component Analysis (PCA) on the samples in both the Frontal Cortex and the Anterior Cingulate Gyrus (see Figure \ref{fig2}). A PCA plot of all disease traits did not indicate any clear separation of classes in both tissues. We also performed PCA plots by batches (see Figure \ref{fig5}). In order to simplify visualization, we then generated pairwise PCA plots between the Control samples and disease-state samples in both tissues (Figures \ref{fig3FC} and \ref{fig3ACG}). In both tissue samples, we observed that clear separation of the Control and AD samples. Similarly, we observed separation of the Control and comorbid ADPD samples. However, when when we analyzed the Control and PD samples, we did not observe clear separation between the two traits.\\
+
+\begin{figure}
+\begin{subfigure}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=0.7\textwidth]{./Figures/fig5/Fig5-FrontalCortex_batches.png}\par
+\end{subfigure}%
+\begin{subfigure}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=0.7\textwidth]{./Figures/fig5/Fig5-Anterior-Cingulate-Gyrus_batches.png}\par
+\end{subfigure}%
+\caption{\label{fig5} left: Frontal Cortex; right: Anterior Cingulate Gyrus (by batches)}
+
+\begin{subfigure}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=0.7\textwidth]{./Figures/fig2/Fig2-Frontal-Cortex.png}\par
+\end{subfigure}%
+\begin{subfigure}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=0.7\textwidth]{./Figures/fig2/Fig2-Anterior-Cingulate-Gyrus.png}\par
+\end{subfigure}%
+\caption{\label{fig2} left: Frontal Cortex; right: Anterior Cingulate Gyrus (by classes)}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=2.0in]{./Figures/fig3/Fig3a-Frontal-Cortex_CtlvsPD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=2.0in]{./Figures/fig3/Fig3b-Frontal-Cortex_CtlvsAD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=2.0in]{./Figures/fig3/Fig3c-Frontal-Cortex_CtlvsADPD.png}
+\end{subfigure}
+\caption{\label{fig3FC} Pairwise PCA for Frontal Cortex}
+
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=2.0in]{./Figures/fig3/Fig3a-Anterior-Cingulate-Gyrus_CtlvsPD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=2.0in]{./Figures/fig3/Fig3b-Anterior-Cingulate-Gyrus_CtlvsAD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=2.0in]{./Figures/fig3/Fig3c-Anterior-Cingulate-Gyrus_CtlvsADPD.png}
+\end{subfigure}
+\caption{\label{fig3ACG} Pairwise PCA for Anterior Cingulate Gyrus}
+
+\end{figure}
+
+We then quantitatively assessed the separation between the Control and disease-state samples by applying a Support Vector Machine (SVM) classifier to the PCA plots (Figures \ref{fig4FC} and \ref{fig4ACG}). Consistent with our observations from the PCA plots, we observed that the SVM was able to accurately classify Control samples versus AD and comorbid PDAD samples. However, SVM classifier performed substantially worse with PD samples. Based on these observations, we concluded that the PD samples do not exhibit noticeable variances in gene expression compared to Control samples.\\
+
+\begin{figure}[H]
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/fig4/Fig4a-Frontal-Cortex_CtlvsPD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/fig4/Fig4b-Frontal-Cortex_CtlvsAD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/fig4/Fig4c-Frontal-Cortex_CtlvsADPD.png}
+\end{subfigure}
+
+\begin{subfigure}{\textwidth}
+ \begin{subfigure}[t]{0.3\textwidth}
+  \centering
+     \makeatletter\def\@captype{table}\makeatother
+       \begin{tabular}{cccc} 
+	  \hline
+    & Ctl & PD \\ 
+      \hline
+    Ctl &   6 &   4 \\ 
+      PD &   4 &   6 \\ 
+     \hline
+	\end{tabular}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+   \centering
+        \makeatletter\def\@captype{table}\makeatother
+         \begin{tabular}{cccc}        
+  \hline
+ & AD & Ctl \\ 
+  \hline
+AD &   9 &   1 \\ 
+  Ctl &   0 &  10 \\ 
+   \hline
+     \hline
+     \end{tabular}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.33\textwidth}
+   \centering
+        \makeatletter\def\@captype{table}\makeatother
+         \begin{tabular}{cccc}        
+  \hline
+ & ADPD & Ctl \\ 
+  \hline
+ADPD &   9 &   1 \\ 
+  Ctl &   0 &  10 \\ 
+   \hline
+	  \end{tabular}
+   \end{subfigure}
+\end{subfigure}
+\caption{\label{fig4FC} pairwise classification for Frontal Cortex}
+
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/fig4/Fig4a-Anterior-Cingulate-Gyrus_CtlvsPD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/fig4/Fig4b-Anterior-Cingulate-Gyrus_CtlvsAD.png}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/fig4/Fig4c-Anterior-Cingulate-Gyrus_CtlvsADPD.png}
+\end{subfigure}
+
+\begin{subfigure}{\textwidth}
+ \begin{subfigure}[t]{0.3\textwidth}
+  \centering
+     \makeatletter\def\@captype{table}\makeatother
+       \begin{tabular}{cccc} 
+	  \hline
+    & Ctl & PD \\ 
+      \hline
+    Ctl &   6 &   4 \\ 
+      PD &   4 &   6 \\ 
+     \hline
+	\end{tabular}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.3\textwidth}
+   \centering
+        \makeatletter\def\@captype{table}\makeatother
+         \begin{tabular}{cccc}        
+  \hline
+ & AD & Ctl \\ 
+  \hline
+AD &   9 &   1 \\ 
+  Ctl &   0 &  10 \\ 
+   \hline
+     \hline
+     \end{tabular}
+   \end{subfigure}
+   \begin{subfigure}[t]{0.33\textwidth}
+   \centering
+        \makeatletter\def\@captype{table}\makeatother
+         \begin{tabular}{cccc}        
+  \hline
+ & ADPD & Ctl \\ 
+  \hline
+ADPD &   9 &   1 \\ 
+  Ctl &   0 &  10 \\ 
+   \hline
+	  \end{tabular}
+   \end{subfigure}
+\end{subfigure}
+\caption{\label{fig4ACG} pairwise classification for Anterior-Cingulate-Gyrus}
+\end{figure}
+
+
 
 \section{Linear modelling to identify differential expression}
 \label{sec:line-modell-ident}
 
 In order to identify differentially expressed genes between Control samples and disease-state samples, we utilized linear models. We  samples as covariates (with parameter coefficientsfor the control, AD, PD, and AD/PD samples) in order to determine the strength of association between each gene and the disease phenotypes. We used two separate linear modelling approaches. First, we modelled each trait as additive categorical random variables: 
-\begin{align*}
-E[Y^{i}|X^{i}] &= \beta_{Ctl} + \beta_{AD}x_{AD}^{i} + \beta_{PD}x_{PD}^{i} + \beta_{ADPD}x_{ADPD}^{i} \\  
-\end{align*}
-Where the $x^{i}s$ are indicator variables for the presence or absence of each disease-trait in a sample.Using this approach, we performed linear modelling on each gene, and obtained sample estimators $\hat{\beta}_{Ctl}, \hat{\beta}_{AD}, \hat{\beta}_{PD}, and \hat{\beta}_{ADPD}$. 
+
+\[  \mathbb{E}[Y^{i}|X^{i}] = \beta_{\Ctl} + \beta_{\AD}x_{\AD}^{i} + \beta_{\PD}x_{\PD}^{i} + \beta_{\ADPD}x_{\ADPD}^{i} \]
+
+Where the $x^{i}s$ are indicator variables for the presence or absence of each disease-trait in a sample.Using this approach, we performed linear modelling on each gene, and obtained sample estimators:
+
+ \[\hat{\beta}_{\Ctl}, \hat{\beta}_{\AD}, \hat{\beta}_{\PD}, \text{ and } \hat{\beta}_{\ADPD} \,.\] 
 
 We also considered that the changes in gene expression values in the ADPD case may not simply reflect additive changes in from both AD and PD in a linear model. To model this, we considered the comorbid case as an interaction effect between both the AD and PD traits:
-\begin{align*}
-E[Y^{i}|X^{i}] &= \beta_{Ctl} + \beta_{AD}x_{AD}^{i} + \beta_{PD}x_{PD}^{i} + \beta_{ADPD}x_{AD}^{i}x_{PD}^{i} \\  
-\end{align*}
+
+\[ \mathbb{E}[Y^{i}|X^{i}] = \beta_{\Ctl} + \beta_{\AD}x_{\AD}^{i} + \beta_{\PD}x_{\PD}^{i} + \beta_{\ADPD}x_{\AD}^{i}x_{\PD}^{i}  \]
+
 Repeating the same analysis as in the additive case, we obtained sample estimators for the AD, PD, and ADPD cases.
 
 \subsection{Volcano plots to identify differential expression}
 \label{subsec:volc-plots-ident}
 
 After obtaining sample estimators  $\hat{\beta}_{Ctl}, \hat{\beta}_{AD}, \hat{\beta}_{PD},$ and $\hat{\beta}_{ADPD}$ for each gene in the in Frontal Cortex and Anterior Cingulate Cyrus, we then computed the the log-fold change and p-value of the fold-change. We performed this calculation for each gene with the disease-state sample estimators against the Control sample estimator:
-\begin{align*}
-& log_{2}FC( \hat{\beta}_{Ctl},\hat{\beta}_{AD})		&Pval (\hat{ \beta}_{Ctl},\hat{\beta}_{AD}) \\  
-& log_{2}FC(\hat{ \beta}_{Ctl},\hat{\beta}_{PD})		& Pval(\hat{ \beta}_{Ctl},\hat{\beta}_{PD}) \\  
-& log_{2}FC( \hat{\beta}_{Ctl},\hat{\beta}_{ADPD})   		& Pval(\hat{ \beta}_{Ctl},\hat{\beta}_{ADPD}) \\  
-\end{align*}
 
-Next, we plotted our results using volcano plots. We defined a differential expressed gene as any gene expression value where the p-value was less than $\frac{0.05}{nGenes}$ and the $log_{2}$ fold-change was larger than $0.25$ \textbf{(Fig 3.A and B)}.
+\[    \begin{array}{rl}  \log_{2}FC( \hat{\beta}_{\Ctl},\hat{\beta}_{\AD})	&	\Pval (\hat{ \beta}_{\Ctl},\hat{\beta}_{\AD}) \\  
+ \log_{2}FC(\hat{ \beta}_{\Ctl},\hat{\beta}_{\PD})	&	\Pval(\hat{ \beta}_{\Ctl},\hat{\beta}_{\PD}) \\  
+ \log_{2}FC( \hat{\beta}_{\Ctl},\hat{\beta}_{\ADPD})   &		\Pval(\hat{ \beta}_{\Ctl},\hat{\beta}_{\ADPD}) \\   \end{array}  \]
+
+Next, we plotted our results using volcano plots. We defined a differential expressed gene as any gene expression value where the p-value was less than $\frac{0.05}{\operatorname{nGenes}}$ and the $\log_{2}$ fold-change was larger than $0.25$ (see Figures \ref{FCvolcano} and \ref{ACGvolcano}).
+
+\begin{figure}
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/volcano/FrontalCortex_Volcano_AdditiveModel_CtrlvsPD.png}
+\caption{Ctl vs. PD}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/volcano/FrontalCortex_Volcano_AdditiveModel_CtrlvsAD.png}
+\caption{Ctl vs. AD}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/volcano/FrontalCortex_Volcano_AdditiveModel_CtrlvsADPD.png}
+\caption{Ctl vs. ADPD}
+\end{subfigure}
+\caption{\label{FCvolcano} Frontal Cortex Volcano Additive Model}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/volcano/ACG_Volcano_AdditiveModel_CtrlvsPD.png}
+\caption{Ctl vs. PD}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/volcano/ACG_Volcano_AdditiveModel_CtrlvsAD.png}
+\caption{Ctl vs. AD}
+\end{subfigure}%
+\begin{subfigure}[b]{0.33\linewidth}
+\centering
+\includegraphics[width=1.5in]{./Figures/volcano/ACG_Volcano_AdditiveModel_CtrlvsADPD.png}
+\caption{Ctl vs. ADPD}
+\end{subfigure}
+\caption{\label{ACGvolcano}Anterior Cingulate Cyrus Additive Model}
+
+\includegraphics[width=\textwidth]{./Figures/volcano/ACG_InteractionModel_CtrlvsSum.png}
+\caption{Interaction model for Anterior Cingulate Gyrus}
+
+\end{figure}
+
 
 \section{Weighted correlation network analysis}
 \label{sec:weight-corr-netw}
 
- Using the candidate differentially expressed genes for the PD, AD, and PD/AD disease phenotypes, we will apply weighted correlation network analysis in order to determine if the candidate genes exhibit interesting coexpression patterns. First, using the available WGNA R-package\cite{Langfelder2008}, we will determine whether there are interesting coexpression clusterings between differentially expressed genes for each phenotype. Next, we will assess the clustering size/structure and compare these properties between phenotypes.
+ Using the candidate differentially expressed genes for the PD, AD, and PD/AD disease phenotypes, we will apply weighted correlation network analysis in order to determine if the candidate genes exhibit interesting coexpression patterns. \\
 
-\subsection{Analysis of coexpression clusterings}
-\label{subsec:analys-coexpr-clust}
+ Correlation networks are constructed on the basis of correlations between quantitative measurements that can be described by an n X m matrix X, where the row indices correspond to network nodes/genes ($i = 1, \dots, n$) and the column indices ($l = 1, \dots, m$) correspond to sample measurements. The rationale behind correlation network methodology is to use network language to describe the pairwise relationships (correlations) between the rows of X. We now describe the steps.\\
 
-\subsubsection{Size and structure of clusterings}
-\label{subsec:size-struct-clust}
+We started off by constructing an adjacency matrix, which is a  symmetric $n \times n$ matrix with entries in $[0, 1]$ whose component $a_{ij}$ encodes the network connection strength between nodes $i$ and $j$. To calculate the adjacency matrix, an intermediate quantity called the co-expression similarity is first defined. The default method defines the coexpression similarity $s_{ij}$ as the absolute value of the correlation coefficient between the profiles of nodes $i$ and $j$:
 
-\subsubsection{Comparison of clusters between phenotypes}
-\label{subsec:comp-clust-betw}
+\[s_{ij} = |\operatorname{cor}(x_i, x_j)| \,.\]
+
+A weighed network adjacency is defined by raising the co-expression similarity to a power: $a_{ij} = s_{ij}^\beta$. Hence, the weighted adjacency between two genes is proportional to their similarity on a logarithmic scale. One way to visualize a weighted network is to plot its heatmap (Figure \ref{Fig: heatmap}). Each row and column of the heatmap corresponds to a single gene. The heatmap can depict adjacencies or topological overlaps, with light colors denoting low adjacency (overlap) and darker colors higher adjacency (overlap). In addition, the gene dendrograms and module colors are plotted along the top and left side of the heatmap.\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{./Figures/heatmap/Heatmap_FC.png}
+    \includegraphics[width=0.7\textwidth]{./Figures/heatmap/Heatmap_ACG.png}
+    \caption{Top: Frontal Cortex, Bottom: Anterior Cingulate Gyrus}
+    \label{Fig: heatmap}
+\end{figure}
+
+To find the optimal value of $\beta$, we examined the plot of power vs $R^2$ for a scale-free topology fit (Figure \ref{Fig: Scale-free}). A scale-free network is a network whose degree distribution follows a power law, at least asymptotically. That is, the fraction $P(k)$ of nodes in the network having $k$ connections to other nodes goes for large values of $k$ as $k^{-\gamma}$.\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./Figures/WGCNA/add_scale_FC.png}
+    \includegraphics[width=\textwidth]{./Figures/WGCNA/add_scale_ACG.png}
+    \caption{Scale-free topology determination for both the parts of the brain}
+    \label{Fig: Scale-free}
+\end{figure}
+
+Based on the plots, we decided to go ahead with 18 as the power for FC (trade-off between $R^2$ and power) and 10 as the power for AFC (the lowest power which achieves an $R^2$ value above $0.7$, which we set as a threshold). To minimize effects of noise and spurious associations, we then transformed the adjacency into a Topological Overlap Matrix. The m-th order generalized topological overlap measure (GTOM) is defined by counting the number of m-step neighbors that a pair of nodes share and normalizing it to take a value between $0$ and $1$. It allows one to trade-off sensitivity versus specificity when it comes to defining pairwise interconnectedness and network modules. Several studies have shown that two proteins having a higher topological overlap are more likely to belong to the same functional class than proteins having a lower topological overlap. Defining these mathematically, $N_m(i) = \{j \neq i|dist(i, j) \leq m\}$ is the set of nodes (excluding $i$ itself) that are reachable from $i$ within a path of length $m$. The $m$th order generalized TOM matrix has elements:\\
+
+\[t_{ij}^m = \frac{|N_m(i) \cap N_m(j)| + a_{ij}}{\min (|N_m(i)|, |N_m(j)|) + 1 -a_{ij}} \]
+
+We then calculated the corresponding dissimilarity matrix ($1$-TOM), and used hierarchical clustering to produce a dendrogram of the genes. Each leaf, that is a short vertical line, corresponds to a gene. Branches of the dendrogram group together densely interconnected, highly co-expressed genes. Module identification amounts to the identification of individual branches (”cutting the branches off the dendrogram”). We used the Dynamic Tree Cut for branch cutting, which implements an adaptive, iterative process of cluster decomposition and combination and
+stops when the number of clusters becomes stable. It starts by obtaining a few large clusters by the static tree cut. The joining heights of each cluster are analyzed for a characteristic pattern of fluctuations  indicating a sub-cluster structure; clusters exhibiting this pattern are recursively split. To avoid over-splitting, very small clusters are joined to their neighboring major clusters.\\
+
+The function returned $10$ clusters for the FC case (refer the R notebook), and we observed that all the clusters had an even distribution of the differentially expressed genes in the AD and the AD/PD case. The case was similar for AGC as well. We decided to merge some of these clusters, and to do that we found out the eigen genes of each cluster, which are representative of the cluster. They are nothing but the first PCA direction of the corresponding expression matrix in each cluster. We wanted to merge modules whose expression profiles are very similar since their genes are highly co-expressed. We clustered the eigengenes on correlation. We got three clusters after that, again having pretty even distributions of the differentially expressed genes from the different volcano plots. Figure \ref{Fig: Dendrograms} has color panels that show the original clusters in the topmost panel, the clusters after merging in the second panel, and the volcano-plot membership (or rather, for which phenotype was this a differentially expressed gene) in the third panel. Given that there is no homogeneity in the clusters based on which phenotype's differentially expressed genes those are (i.e. each cluster has an even distribution from all the relevant volcano plots), we concluded that the comorbidity is driven by the AD genes, which are coexpressed with the AD/PD genes, which corroborates the findings of the authors.\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./Figures/WGCNA/add_dendro_FC.png}
+    \includegraphics[width=\textwidth]{./Figures/WGCNA/add_dendro_ACG.png}
+    \caption{Top: Frontal Cortex, Bottom: Anterior Cingulate Gyrus}
+    \label{Fig: Dendrograms}
+\end{figure}
+
+
 
 
 \section{Biological functions of differentially expressed genes}
