@@ -1,1 +1,1 @@
-# Linear-Modelling-and-Network-Analysis-of-the-Human-Brain-Proteome
+# Linear Modelling and Network Analysis of the Human Brain Proteome 
