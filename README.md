@@ -6,12 +6,12 @@ This repository contains analysis and results from our work evaluating protein e
 
 Determining protein expression values was performed using Label-free Tandem Mass Spectrometry. For more information on details of the experimental protocol, please consult the original publication below.
 
-![Sample Collection](https://github.com/jtcanty/Linear-Modelling-and-Network-Analysis-of-the-Human-Brain-Proteome/blob/master/docs/sample_collection.png)
+![Sample Collection](https://github.com/jtcanty/Brain-Proteome/blob/master/docs/sample_collection.png)
 
 
 Detailed below is the general workflow for exploratory data analysis, processing, and modelling used in the report. 
 
-![Data Analysis](https://github.com/jtcanty/Linear-Modelling-and-Network-Analysis-of-the-Human-Brain-Proteome/blob/master/docs/differential_expression_analysis.png)
+![Data Analysis](https://github.com/jtcanty/Brain-Proteome/blob/master/docs/differential_expression_analysis.png)
 
 Furthermore, we performed weighted-correlation network analysis (WCNA) in order to identify protein expression correlations within groups of differentially identified genes. Using the list of differentially expressed genes, we identified their biological functions using the PANTHER gene ontology [database](http://www.pantherdb.org).
 
