@@ -4,7 +4,7 @@ This repository contains analysis and results from our work evaluating protein e
 
 ## Summary
 
-[Experimental Workflow](\differential_expression_analysis.png)
+![Experimental Workflow](\differential_expression_analysis.png)
 
 
 ## References
