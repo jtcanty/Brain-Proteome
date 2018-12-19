@@ -2,11 +2,11 @@
 
 This repository contains analysis and results from our work evaluating protein expression data from human brain tissue exhibiting both Alzheimer's and Parkinson's neurodegenerative diseases. The final report summarizing our results and listing the differentially expressed gene candidates can be found [here](/report/report.pdf).
 
-Authors: Ramasubramanian Balasubramanian, John Canty, Annan Deng, William Krinsman
+**Authors:** Ramasubramanian Balasubramanian, John Canty, Annan Deng, William Krinsman
 
 ## Summary
 
-Determination of protein expression values was performed using Label-free Tandem Mass Spectrometry. For more information on the details of the experimental protocol, please consult the original publication below.
+Log-fold protein expression values were obtained using Label-free Tandem Mass Spectrometry. For more information on the details of the experimental protocol, please consult the original publication below.
 
 ![Sample Collection](https://github.com/jtcanty/Brain-Proteome/blob/master/docs/sample_collection.png)
 
