@@ -4,7 +4,7 @@ This repository contains analysis and results from our work evaluating protein e
 
 ## Summary
 
-![Experimental Workflow](Linear-Modelling-and-Network-Analysis-of-the-Human-Brain-Proteome\experimental_workflow.png)
+![Sample Collection](.\sample_collection.png)
 
 
 ## References
