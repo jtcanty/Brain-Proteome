@@ -1,0 +1,524 @@
+---
+title: "Gene_linear_modelling"
+output: odf_document
+---
+
+
+
+```{r Import Libraries, include=FALSE}
+library("limma")
+library("ggplot2")
+library("WGCNA")
+options(stringsAsFactors = FALSE)
+```
+
+```{r Load Data, include=TRUE}
+load("filtered_TMT_Summary_Data_FC.RData")
+load("Quantile_TMT_Summary_Data2.RData") #FC
+Quantile_TMT_Summary_Data = Quantile_TMT_Summary_Data2
+```
+
+```{r Additive Linear Model, include=TRUE}
+nCols <- ncol(Quantile_TMT_Summary_Data)
+nGenes <- nrow(Quantile_TMT_Summary_Data)
+# additive linear model
+addBatchFactor <- c(2,2,1,1,3,3,4,4)
+addDiseaseGroup <- factor(rep(addBatchFactor,5))
+addDesign <- model.matrix(~addDiseaseGroup + 0)
+#addDesign <- model.matrix(~addDiseaseGroup)
+colnames(addDesign) <- c("Ctl", "AD", "PD","ADPD")
+addFit <- lmFit(Quantile_TMT_Summary_Data[,3:nCols], addDesign)
+contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=addDesign)
+addFit2 <- contrasts.fit(addFit, contrast.matrix)
+addFit2 <- eBayes(addFit2)
+topGenesAdd <- topTable(addFit2, coef=1, adjust="BH")
+# interaction linear model
+Ctl <-factor(rep(c(0,0,1,1,0,0,0,0),5))
+AD <- factor(rep(c(1,1,0,0,0,0,1,1),5))
+PD <- factor(rep(c(0,0,0,0,1,1,1,1),5))
+#intDesign <- model.matrix(~Ctl + AD + PD + AD:PD + 0)
+intDesign <- model.matrix(~Ctl + AD + PD + AD:PD)
+intDesign <- intDesign[,2:5]
+colnames(intDesign) <- c("Ctl", "AD", "PD","ADPD")
+intFit <- lmFit(Quantile_TMT_Summary_Data[,3:nCols], intDesign)
+#contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, ADPD-Ctl, levels=intDesign)
+contrast.matrix <- makeContrasts(AD-Ctl, PD-Ctl, (ADPD+AD+PD)-Ctl, levels=intDesign)
+intFit2 <- contrasts.fit(intFit, contrast.matrix)
+intFit2 <- eBayes(intFit2)
+topGenesInt <- topTable(intFit2, coef=1, adjust="BH")
+# Extra contrast matrix for the interaction
+#contrast.matrix <- makeContrasts((ADPD+AD+PD)-Ctl, levels=intDesign)
+#intFit3 <- contrasts.fit(intFit, contrast.matrix)
+#intFit3 <- eBayes(intFit3)
+#topGenesInt <- topTable(intFit3, coef=1, adjust="BH")
+```
+
+```{r Volcano plot, include=TRUE}
+# Generate Log-fold changes
+adAddGenes <- topTable(addFit2, coef=1, number=1000000, sort.by="logFC")
+pdAddGenes <- topTable(addFit2, coef=2, number=1000000, sort.by="logFC")
+adpdAddGenes <- topTable(addFit2, coef=3, number=1000000, sort.by="logFC")
+adIntGenes <- topTable(intFit2, coef=1, number=1000000, sort.by="logFC")
+pdIntGenes <- topTable(intFit2, coef=2, number=1000000, sort.by="logFC")
+adpdIntGenes <- topTable(intFit2, coef=3, number=1000000, sort.by="logFC")
+#adpdSumIntGenes <- topTable(intFit3, coef=1, number=1000000, sort.by="logFC")
+# Add compute expressed genes threshold (TRUE is differentially expressed)
+adAddGenes$threshold = as.factor(abs(adAddGenes$logFC) > 0.25 & adAddGenes$P.Value < 0.05/nGenes)
+pdAddGenes$threshold = as.factor(abs(pdAddGenes$logFC) > 0.25 & pdAddGenes$P.Value < 0.05/nGenes)
+adpdAddGenes$threshold = as.factor(abs(adpdAddGenes$logFC) > 0.25 & adpdAddGenes$P.Value < 0.05/nGenes)
+adIntGenes$threshold = as.factor(abs(adIntGenes$logFC) > 0.25 & adIntGenes$P.Value < 0.05/nGenes)
+pdIntGenes$threshold = as.factor(abs(pdIntGenes$logFC) > 0.25 & pdIntGenes$P.Value < 0.05/nGenes)
+adpdIntGenes$threshold = as.factor(abs(adpdIntGenes$logFC) > 0.25 & adpdIntGenes$P.Value < 0.05/nGenes)
+adpdSumIntGenes$threshold = as.factor(abs(adpdSumIntGenes$logFC) > 0.25 & adpdSumIntGenes$P.Value < 0.05/nGenes)
+# Generate volcano plots using the additive model.
+
+```
+
+```{r}
+
+g1 = ggplot(data=adAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. AD')
+g1 + ggsave(file='FrontalCortex_Volcano_AdditiveModel_CtrlvsAD.png')
+g2 = ggplot(data=pdAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. PD')
+g2 + ggsave(file='FrontalCortex_Volcano_AdditiveModel_CtrlvsPD.png')
+g3 = ggplot(data=adpdAddGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Additive model: Ctrl vs. ADPD')
+g3 + ggsave(file='FrontalCortex_Volcano_AdditiveModel_CtrlvsADPD.png')
+# Generate volcano plots using the interaction model.
+g4 = ggplot(data=adIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. AD')
+g4 + ggsave(file='FrontalCortex_Volcano_InteractionModel_CtrlvsAD.png')
+g5 = ggplot(data=pdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. PD')
+g5 + ggsave(file='FrontalCortex_Volcano_InteractionModel_CtrlvsPD.png')
+g6 = ggplot(data=adpdIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. ADPD')
+g6
+#g7 = ggplot(data=adpdSumIntGenes, aes(x=logFC, y=-log10(P.Value), colour=threshold)) +
+#  geom_point(alpha=0.4, size=1.75) +
+#  theme(legend.position = "none") +
+#  xlim(c(-2.5, 2.5)) + ylim(c(0, 15)) +
+#  xlab("log2 fold change") + ylab("-log10 p-value") + ggtitle('Interaction model: Ctrl vs. AD + PD + ADPD')
+#g7 + ggsave(file='FrontalCortex_Volcano_InteractionModel_CtrlvsSum.png')
+
+
+
+```
+
+
+```{r}
+
+
+install.packages("BiocManager") 
+BiocManager::install("WGCNA") 
+```
+
+
+```{r}
+
+
+library(WGCNA)
+options(stringsAsFactors = FALSE);
+```
+
+
+
+
+
+
+
+
+
+```{r}
+
+# Might have to do manual construction of blocks to get the maximally connected genes
+
+get_max_conn_genes <- function(data, data_mat, ad_ctl_len, pd_ctl_len, adpd_ctl_len, softPower, min_mod_size){
+  softPower = softPower;
+  adjacency = adjacency(data, power = softPower);
+  
+  # Turn adjacency into topological overlap
+  TOM = TOMsimilarity(adjacency);
+  dissTOM = 1-TOM
+  
+  # Call the hierarchical clustering function
+  geneTree = hclust(as.dist(dissTOM), method = "average");
+  # Plot the resulting clustering tree (dendrogram)
+  sizeGrWindow(12,9)
+  plot(geneTree, xlab="", sub="", main = "Gene clustering on TOM-based dissimilarity",
+  labels = FALSE, hang = 0.04);
+  
+  minModuleSize = 1;
+  # Module identification using dynamic tree cut:
+  dynamicMods = cutreeDynamic(dendro = geneTree, distM = dissTOM,
+  deepSplit = 2, pamRespectsDendro = FALSE,
+  minClusterSize = min_mod_size);
+  table(dynamicMods)
+  
+  # Convert numeric lables into colors
+  dynamicColors = labels2colors(dynamicMods)
+  table(dynamicColors)
+  # Plot the dendrogram and colors underneath
+  sizeGrWindow(8,6)
+  plotDendroAndColors(geneTree, dynamicColors, "Dynamic Tree Cut",
+  dendroLabels = FALSE, hang = 0.03,
+  addGuide = TRUE, guideHang = 0.05,
+  main = "Gene dendrogram and module colors")
+  
+  "
+  # Maximally connected gene, let's call it mc_gene
+  # For each cluster, find elements in that cluster, sum up the corresponding row from the     adjacency matrix.
+  mc_genes = list()
+  for(i in c(1:max(dynamicMods))){
+    all_row_indices = which(dynamicMods == i)
+    max_val = -1
+    max_idx = -1
+    for(id in all_row_indices){
+      curr_sum = sum(adjacency[id,all_row_indices])
+      if(curr_sum>max_val){
+        max_val = curr_sum
+        max_idx = id
+      }
+    }
+    mc_genes[[i]] <- rownames(data_mat[max_idx,])
+  }
+  "
+  
+  # Calculate eigengenes
+  MEList = moduleEigengenes(data, colors = dynamicColors)
+  MEs = MEList$eigengenes
+  # Calculate dissimilarity of module eigengenes
+  MEDiss = 1-cor(MEs);
+  # Cluster module eigengenes
+  METree = hclust(as.dist(MEDiss), method = "average");
+  # Plot the result
+  sizeGrWindow(7, 6)
+  plot(METree, main = "Clustering of module eigengenes",
+  xlab = "", sub = "")
+  
+  MEDissThres = 0.2
+  # Plot the cut line into the dendrogram
+  abline(h=MEDissThres, col = "red")
+  # Call an automatic merging function
+  merge = mergeCloseModules(data, dynamicColors, cutHeight = MEDissThres, verbose = 3)
+  # The merged module colors
+  mergedColors = merge$colors;
+  # Eigengenes of the new merged modules:
+  mergedMEs = merge$newMEs;
+  
+  sizeGrWindow(12, 9)
+  #pdf(file = "Plots/geneDendro-3.pdf", wi = 9, he = 6)
+  adpd_colors = c(rep("blue",ad_ctl_len), rep("green", pd_ctl_length), rep("red",adpd_ctl_length))
+  plotDendroAndColors(geneTree, cbind(dynamicColors, mergedColors, adpd_colors),
+  c("Dynamic Tree Cut", "Merged dynamic", "B:ADPD, R:AD"),
+  dendroLabels = FALSE, hang = 0.03,
+  addGuide = TRUE, guideHang = 0.05)
+  
+  # Rename to moduleColors
+  moduleColors = mergedColors
+  # Construct numerical labels corresponding to the colors
+  colorOrder = c("grey", standardColors(50));
+  moduleLabels = match(moduleColors, colorOrder)-1;
+  MEs = mergedMEs;
+  return(moduleLabels)
+}
+
+
+```
+
+
+# Additive model
+```{r}
+
+# Get all differentially expressed genes into a dataframe
+
+
+ad_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(adAddGenes[which(adAddGenes$threshold == TRUE),])),]))
+rownames(ad_ctl) <- ad_ctl[,1]
+ad_ctl_length = length(rownames(ad_ctl))
+ad_ctl[,1] <- NULL
+
+pd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(pdAddGenes[which(pdAddGenes$threshold == TRUE),])), ]))
+rownames(pd_ctl) <- pd_ctl[,1]
+pd_ctl_length = length(rownames(pd_ctl))
+pd_ctl[,1] <- NULL
+
+adpd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(adpdAddGenes[which(adpdAddGenes$threshold == TRUE),])), ]))
+rownames(adpd_ctl) <- adpd_ctl[,1]
+adpd_ctl_length = length(rownames(adpd_ctl))
+adpd_ctl[,1] <- NULL
+
+all_diff <- rbind(ad_ctl,pd_ctl,adpd_ctl)
+```
+
+```{r}
+
+all_diff_data <- all_diff[,-1]
+all_diff_data <- t(all_diff_data)
+
+gsg = goodSamplesGenes(all_diff_data, verbose = 3);
+gsg$allOK
+
+
+# Choose a set of soft-thresholding powers
+powers = c(c(1:10), seq(from = 12, to=20, by=2))
+# Call the network topology analysis function
+sft = pickSoftThreshold(all_diff_data, powerVector = powers, verbose = 5)
+# Plot the results:
+sizeGrWindow(9, 5)
+par(mfrow = c(1,2));
+cex1 = 0.9;
+# Scale-free topology fit index as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+xlab="Soft Threshold (power)",ylab="Scale Free Topology Model Fit,signed R^2",type="n",
+main = paste("Scale independence - FC"));
+text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+labels=powers,cex=cex1,col="red");
+# this line corresponds to using an R^2 cut-off of h
+abline(h=0.70,col="red")
+# Mean connectivity as a function of the soft-thresholding power
+#dev.copy(png, 'scale_free_additive.png')
+plot(sft$fitIndices[,1], sft$fitIndices[,5],
+xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
+main = paste("Mean connectivity - FC"))
+text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
+#dev.off()
+
+```
+
+
+
+
+```{r}
+
+module_labels = get_max_conn_genes(all_diff_data, all_diff, ad_ctl_length, pd_ctl_length, adpd_ctl_length, 18, 2)
+# For each cluster
+for(i in unique(module_labels)){
+  if(i!=0){
+    all_row_indices = which(colors_merge == i)
+    
+    from_ad = sum(all_row_indices<=27)
+    from_adpd = length(all_row_indices) - from_ad
+    print(c(from_ad, from_adpd))
+} 
+}
+
+
+```
+
+
+# Interaction model
+```{r}
+
+# Get all differentially expressed genes into a dataframe
+
+
+ad_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(adIntGenes[which(adIntGenes$threshold == TRUE),])),]))
+rownames(ad_ctl) <- ad_ctl[,1]
+ad_ctl_length = length(rownames(ad_ctl))
+ad_ctl[,1] <- NULL
+
+pd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(pdIntGenes[which(pdIntGenes$threshold == TRUE),])),]))
+rownames(pd_ctl) <- pd_ctl[,1]
+pd_ctl_length = length(rownames(pd_ctl))
+pd_ctl[,1] <- NULL
+
+adpd_ctl <-  as.data.frame((Quantile_TMT_Summary_Data2[as.integer(rownames(adpdSumIntGenes[which(adpdSumIntGenes$threshold == TRUE),])),]))
+rownames(adpd_ctl) <- adpd_ctl[,1]
+adpd_ctl_length = length(rownames(adpd_ctl))
+adpd_ctl[,1] <- NULL
+
+all_diff <- rbind(ad_ctl,pd_ctl,adpd_ctl)
+```
+
+```{r}
+
+all_diff_data <- all_diff[,-1]
+all_diff_data <- t(all_diff_data)
+
+gsg = goodSamplesGenes(all_diff_data, verbose = 3);
+gsg$allOK
+
+
+# Choose a set of soft-thresholding powers
+powers = c(c(1:10), seq(from = 12, to=20, by=2))
+# Call the network topology analysis function
+sft = pickSoftThreshold(all_diff_data, powerVector = powers, verbose = 5)
+# Plot the results:
+sizeGrWindow(9, 5)
+par(mfrow = c(1,2));
+cex1 = 0.9;
+# Scale-free topology fit index as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+xlab="Soft Threshold (power)",ylab="Scale Free Topology Model Fit,signed R^2",type="n",
+main = paste("Scale independence"));
+text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+labels=powers,cex=cex1,col="red");
+# this line corresponds to using an R^2 cut-off of h
+abline(h=0.70,col="red")
+# Mean connectivity as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], sft$fitIndices[,5],
+xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
+main = paste("Mean connectivity"))
+text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
+
+
+```
+
+
+
+
+```{r}
+
+module_labels = get_max_conn_genes(all_diff_data, all_diff, ad_ctl_length, pd_ctl_length, adpd_ctl_length, 18, 2)
+# For each cluster
+for(i in unique(module_labels)){
+  if(i!=0){
+    all_row_indices = which(colors_merge == i)
+    
+    from_ad = sum(all_row_indices<=27)
+    from_adpd = length(all_row_indices) - from_ad
+    print(c(from_ad, from_adpd))
+} 
+}
+
+
+```
+
+```{r}
+
+
+
+data = all_diff_data
+data_mat =all_diff
+min_mod_size = 2
+softPower = 18;
+adjacency = adjacency(data, power = softPower);
+
+# Turn adjacency into topological overlap
+TOM = TOMsimilarity(adjacency);
+dissTOM = 1-TOM
+
+# Call the hierarchical clustering function
+geneTree = hclust(as.dist(dissTOM), method = "average");
+# Plot the resulting clustering tree (dendrogram)
+sizeGrWindow(12,9)
+plot(geneTree, xlab="", sub="", main = "Gene clustering on TOM-based dissimilarity",
+labels = FALSE, hang = 0.04);
+
+minModuleSize = 1;
+# Module identification using dynamic tree cut:
+dynamicMods = cutreeDynamic(dendro = geneTree, distM = dissTOM,
+deepSplit = 2, pamRespectsDendro = FALSE,
+minClusterSize = min_mod_size);
+table(dynamicMods)
+
+# Convert numeric lables into colors
+dynamicColors = labels2colors(dynamicMods)
+table(dynamicColors)
+# Plot the dendrogram and colors underneath
+sizeGrWindow(8,6)
+plotDendroAndColors(geneTree, dynamicColors, "Dynamic Tree Cut",
+dendroLabels = FALSE, hang = 0.03,
+addGuide = TRUE, guideHang = 0.05,
+main = "Gene dendrogram and module colors")
+
+"
+# Maximally connected gene, let's call it mc_gene
+# For each cluster, find elements in that cluster, sum up the corresponding row from the     adjacency matrix.
+mc_genes = list()
+for(i in c(1:max(dynamicMods))){
+  all_row_indices = which(dynamicMods == i)
+  max_val = -1
+  max_idx = -1
+  for(id in all_row_indices){
+    curr_sum = sum(adjacency[id,all_row_indices])
+    if(curr_sum>max_val){
+      max_val = curr_sum
+      max_idx = id
+    }
+  }
+  mc_genes[[i]] <- rownames(data_mat[max_idx,])
+}
+"
+
+# Calculate eigengenes
+MEList = moduleEigengenes(data, colors = dynamicColors)
+MEs = MEList$eigengenes
+# Calculate dissimilarity of module eigengenes
+MEDiss = 1-cor(MEs);
+# Cluster module eigengenes
+METree = hclust(as.dist(MEDiss), method = "average");
+# Plot the result
+sizeGrWindow(7, 6)
+plot(METree, main = "Clustering of module eigengenes",
+xlab = "", sub = "")
+
+MEDissThres = 0.2
+# Plot the cut line into the dendrogram
+abline(h=MEDissThres, col = "red")
+# Call an automatic merging function
+merge = mergeCloseModules(data, dynamicColors, cutHeight = MEDissThres, verbose = 3)
+# The merged module colors
+mergedColors = merge$colors;
+# Eigengenes of the new merged modules:
+mergedMEs = merge$newMEs;
+
+sizeGrWindow(12, 9)
+#pdf(file = "Plots/geneDendro-3.pdf", wi = 9, he = 6)
+adpd_colors = c(rep("blue",ad_ctl_length), rep("green", pd_ctl_length), rep("red",adpd_ctl_length))
+plotDendroAndColors(geneTree, cbind(dynamicColors, mergedColors, adpd_colors),
+c("Dynamic Tree Cut", "Merged dynamic", "R:AD, B:ADPD"),
+dendroLabels = FALSE, hang = 0.03,
+addGuide = TRUE, guideHang = 0.05)
+
+# Rename to moduleColors
+moduleColors = mergedColors
+# Construct numerical labels corresponding to the colors
+colorOrder = c("grey", standardColors(50));
+moduleLabels = match(moduleColors, colorOrder)-1;
+MEs = mergedMEs;
+
+  
+
+```
+
+
+
+
+
+```{r}
+# Calculate topological overlap anew: this could be done more efficiently by saving the TOM
+# calculated during module detection, but let us do it again here.
+dissTOM = 1-TOMsimilarityFromExpr(all_diff_data, power = 18);
+# Transform dissTOM with a power to make moderately strong connections more visible in the heatmap
+plotTOM = dissTOM^7;
+# Set diagonal to NA for a nicer plot
+diag(plotTOM) = NA;
+# Call the plot function
+sizeGrWindow(9,9)
+TOMplot(plotTOM, geneTree, moduleColors, main = "Network heatmap plot, all genes")
+
+
+```
+
+
