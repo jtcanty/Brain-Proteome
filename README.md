@@ -1,10 +1,12 @@
 ## Linear Modelling and Network Analysis of the Human Brain Proteome 
 
-This repository contains analysis and results from our work evaluating protein expression data on human brain tissue exhibiting both Alzheimer's and Parkinson's neurodegenerative diseases. The final report summarizing our results and listing the differentially expressed gene candidates can be found [here](/report/report.pdf).
+This repository contains analysis and results from our work evaluating protein expression data from human brain tissue exhibiting both Alzheimer's and Parkinson's neurodegenerative diseases. The final report summarizing our results and listing the differentially expressed gene candidates can be found [here](/report/report.pdf).
+
+Authors: Ramasubramanian Balasubramanian, John Canty, Annan Deng, William Krinsman
 
 ## Summary
 
-Determining protein expression values was performed using Label-free Tandem Mass Spectrometry. For more information on details of the experimental protocol, please consult the original publication below.
+Determination of protein expression values was performed using Label-free Tandem Mass Spectrometry. For more information on the details of the experimental protocol, please consult the original publication below.
 
 ![Sample Collection](https://github.com/jtcanty/Brain-Proteome/blob/master/docs/sample_collection.png)
 
@@ -13,7 +15,7 @@ Detailed below is the general workflow for exploratory data analysis, processing
 
 ![Data Analysis](https://github.com/jtcanty/Brain-Proteome/blob/master/docs/differential_expression_analysis.png)
 
-Furthermore, we performed weighted-correlation network analysis (WCNA) in order to identify protein expression correlations within groups of differentially identified genes. Using the list of differentially expressed genes, we identified their biological functions using the PANTHER gene ontology [database](http://www.pantherdb.org).
+We also performed weighted-correlation network analysis (WCNA) in order to identify protein expression correlations within groups of differentially identified genes. Using the list of differentially expressed genes, we identified their biological functions using the PANTHER gene ontology [database](http://www.pantherdb.org).
 
 
 ## References
