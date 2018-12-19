@@ -4,7 +4,7 @@ This repository contains analysis and results from our work evaluating protein e
 
 ## Summary
 
-![Sample Collection](\docs\sample_collection.png)
+![Logo](https://github.com/jtcanty/Linear-Modelling-and-Network-Analysis-of-the-Human-Brain-Proteome/blob/master/docs/sample_collection.png)
 
 
 ## References
