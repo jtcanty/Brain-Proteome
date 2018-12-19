@@ -4,7 +4,7 @@ This repository contains analysis and results from our work evaluating protein e
 
 ## Summary
 
-![Sample Collection](.\sample_collection.png)
+![Sample Collection](\docs\sample_collection.png)
 
 
 ## References
