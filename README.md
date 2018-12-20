@@ -1,6 +1,6 @@
 ## Linear Modelling and Network Analysis of the Human Brain Proteome 
 
-This repository contains analysis and results from our work evaluating protein expression data from human brain tissue exhibiting both Alzheimer's and Parkinson's neurodegenerative diseases. The final report summarizing our results and listing the differentially expressed gene candidates can be found [here](/report/report.pdf).
+This repository contains analysis and results from our work evaluating protein expression data from human brain tissue exhibiting both Alzheimer's and Parkinson's neurodegenerative diseases. The final report summarizing our results and listing the differentially expressed gene candidates can be found [here](/report/report.pdf). The original data-set that used is located on [Synapse](https://www.synapse.org/#!Synapse:syn10183278/wiki/450583).
 
 **Authors:** Ramasubramanian Balasubramanian, John Canty, Annan Deng, William Krinsman
 
